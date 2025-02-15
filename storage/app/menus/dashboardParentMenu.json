@@ -1,0 +1,40 @@
+{
+    "menu": [
+      {
+        "name": "Dashboard",
+        "icon": "dashboard.svg",
+        "slug": "dashboard.index",
+        "url": ""
+      },
+      {
+        "name": "Tutors",
+        "icon": "tutors.svg",
+        "slug": "dashboard.tutors",
+        "url": "tutors"
+      },
+      {
+        "name": "Bookings",
+        "icon": "bookings.svg",
+        "slug": "dashboard.bookings",
+        "url": "bookings"
+      },
+      {
+        "name": "Payments",
+        "icon": "payments.svg",
+        "slug": "dashboard.payments",
+        "url": "payments"
+      },
+      {
+        "name": "Chats",
+        "icon": "chats.svg",
+        "slug": "dashboard.chats",
+        "url": "chats"
+      },
+      {
+        "name": "Settings",
+        "icon": "settings.svg",
+        "slug": "dashboard.settings",
+        "url": "settings"
+      }
+    ]
+  }

@@ -1,0 +1,786 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: Kronaone;
+    src: url('/public/fonts/krona-one/KronaOne-Regular.ttf');
+}
+
+@font-face {
+    font-family: "Garamond-bold";
+    src: url('/public/fonts/EB_Garamond/static/EBGaramond-Bold.ttf');
+}
+
+@font-face {
+    font-family: "Garamond-medium";
+    src: url('/public/fonts/EB_Garamond/static/EBGaramond-Medium.ttf');
+}
+
+@font-face {
+    font-family: "Garamond-light";
+    src: url('/public/fonts/EB_Garamond/static/EBGaramond-Regular.ttf');
+}
+
+@font-face {
+    font-family: "Garamond-italic";
+    src: url('/public/fonts/EB_Garamond/static/EBGaramond-Italic.ttf');
+}
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #99aeac;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #99aeac;
+    border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #6a7d7b;
+}
+
+/* Global scrollbar for Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #99aeac #f1f1f1;
+}
+
+.booking-date-picker .v-picker-title {
+    display: none !important;
+}
+.v-container.v-locale--is-ltr {
+    max-width: 1536px !important;
+}
+
+body {
+    font-family: "Garamond-light";
+    color: #4C4B47;
+}
+h1, h2, h3, h4{
+    font-family: Kronaone !important;
+}
+
+span {
+    font-family: "Garamond-light" !important;
+}
+.nav-container .nav-item:hover {
+    background: #99AEAC !important;
+    color: white !important;
+}
+.nav-container .sub-menu .sub-menu-item:hover {
+    background: #BFD9D7 !important;
+    color: white !important;
+}
+
+.nav-container.active .nav-item {
+    background: #99AEAC !important;
+    color: white !important;
+}
+
+.nav-container .sub-menu {
+    overflow: hidden;
+    height: 0;
+}
+.nav-container.active .sub-menu {
+    height: fit-content !important;
+}
+.nav-container .sub-menu .sub-menu-item.active {
+    background: #BFD9D7;
+    color: white;
+}
+.v-dialog.v-dialog--scrollable .v-overlay__content {
+    overflow: auto !important;
+    --v-scrollbar-offset: none !important;
+}
+
+#revenueChart .apexcharts-toolbar {
+    display: none !important;
+}
+
+.plan-slide-group .v-slide-group__container .v-slide-group__content {
+    justify-content: space-around !important;
+}
+
+.subject-slide-group.v-slide-group .v-slide-group__prev, .subject-slide-group.v-slide-group .v-slide-group__next {
+    z-index: 9;
+    position: absolute;
+    top: 22px;
+    background: white;
+    height: 48px;
+    width: 48px;
+    border-radius: 22px;
+    box-shadow: 0px 0px 9px 9px #BFD9D7;
+}
+.subject-slide-group.v-slide-group .v-slide-group__next--disabled, .subject-slide-group.v-slide-group .v-slide-group__prev--disabled {
+    display: none !important;
+}
+
+.subject-slide-group.v-slide-group .v-slide-group__next {
+    right: 14px ;
+}
+
+.discount-code .v-input__details .v-messages {
+    font-size: 16px;
+    opacity: 1;
+    color: #6a7f7d;
+}
+
+.plan-slide-group.v-slide-group {
+    padding-bottom: 65px !important;
+}
+
+.plan-slide-group.v-slide-group .v-slide-group__prev, .plan-slide-group.v-slide-group .v-slide-group__next {
+    position: absolute;
+    bottom: 0px;
+    background: #AE9152;
+    color:white;
+    padding: 12.25px;
+    border-radius: 16px;
+}
+.plan-slide-group.v-slide-group .v-slide-group__prev{
+    left: 45%;
+}
+.plan-slide-group.v-slide-group .v-slide-group__next {
+    right: 0px;
+    right: 45%;
+}
+.plan-slide-group.v-slide-group .v-slide-group__prev .v-icon, .plan-slide-group.v-slide-group .v-slide-group__next .v-icon {
+    font-size: 17.5px;
+}
+
+.auth-text-field.v-input .v-input__control .v-field--no-label.v-field--variant-outlined {
+    border-radius: 12px;
+}
+
+.register-phone-component .v-input .v-input__control {
+    background: white !important;
+}
+.register-textarea-component .v-field--variant-solo.v-field {
+    border-radius: 12px;
+    border: 1px solid #0000001f;
+    box-shadow: none;
+}
+.register-textarea-component.v-input .v-input__control .v-select__selection .v-chip {
+    background: #BFD9D7;
+    font-size: 14px !important;
+    color: #475467 !important;
+    font-family: "Garamond-light" !important;
+    text-transform: none !important;
+}
+.register-textarea-component .v-input__details {
+    padding-left: 4px !important;
+}
+.register-textarea-component.v-input .v-input__control .v-field__field .v-chip {
+    background: #BFD9D7;
+    font-size: 14px !important;
+    color: #475467 !important;
+    font-family: "Garamond-light" !important;
+    text-transform: none !important;
+}
+.register-radio-group.v-input.v-radio-group .v-input__control .v-selection-control-group--inline {
+    gap: 6rem;
+}
+.register-radio-three-group.v-input.v-radio-group .v-input__control .v-selection-control-group.v-selection-control-group--inline {
+    justify-content: space-between;
+}
+.register-checkbox.v-checkbox .v-input__control .v-selection-control {
+    align-items: baseline;
+}
+.register-checkbox.v-checkbox .v-input__control .v-selection-control .v-label {
+    opacity: 1;
+}
+.v-otp-input.register-otp-component .v-otp-input__content {
+    padding: 0px;
+    max-width: fit-content;
+}
+.v-otp-input.register-otp-component .v-otp-input__content .v-field {
+    border-radius: 12px;
+}
+
+.v-expansion-panels .v-expansion-panel .v-expansion-panel-title {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.v-expansion-panels .v-expansion-panel .v-expansion-panel-title.v-expansion-panel-title--active {
+    min-height: fit-content;
+}
+
+.v-expansion-panels .v-expansion-panel .v-expansion-panel-text .v-expansion-panel-text__wrapper {
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+}
+
+.search-tutor-component .v-input__control .v-selection-control {
+    min-height: fit-content;
+}
+
+.payment-table.text-red.border {
+    border: 1px solid red !important;
+}
+.payment-table.text-green.border {
+    color: #1FB356 !important;
+    border: 1px solid #1FB356 !important;
+}
+.v-label.v-label--clickable {
+    opacity: 1;
+}
+.united-kingdom-pointer {
+    top: 26%;
+    left: 47%;
+    width: 36px;
+    height: 36px;
+}
+.ireland-pointer {
+    top: 29%;
+    left:44.5%;
+    width: 36px;
+    height: 36px;
+}
+.france-pointer {
+    top: 33%;
+    left:47%;
+    width: 36px;
+    height: 36px;
+}
+.germany-pointer {
+    top: 30%;
+    left:50%;
+    width: 36px;
+    height: 36px;
+}
+.united-state-pointer {
+    top: 40%;
+    left:26.3%;
+    width: 36px;
+    height: 36px;
+}
+.united-arab-pointer {
+    top: 48.7%;
+    left:62%;
+    width: 36px;
+    height: 36px;
+}
+.monaco-pointer {
+    top: 35.6%;
+    left:48.5%;
+    width: 36px;
+    height: 36px;
+}
+.spain-pointer {
+    top: 39%;
+    left:45.5%;
+    width: 36px;
+    height: 36px;
+}
+.australia-pointer {
+    top: 77%;
+    left:84%;
+    width: 36px;
+    height: 36px;
+}
+.switzerland-pointer {
+    top: 33%;
+    left:48.8%;
+    width: 36px;
+    height: 36px;
+}
+.china-pointer {
+    top: 36%;
+    left:76%;
+    width: 36px;
+    height: 36px;
+}
+.italy-pointer {
+    top: 37.5%;
+    left:51.5%;
+    width: 36px;
+    height: 36px;
+}
+.south-america-pointer {
+    top: 66%;
+    left:31.7%;
+    width: 36px;
+    height: 36px;
+}
+.russia-pointer {
+    top: 25%;
+    left:59%;
+    width: 36px;
+    height: 36px;
+}
+@media (max-width: 1440px) {
+    .united-kingdom-pointer {
+        top: 25%;
+        left: 46.8%;
+        width: 36px;
+        height: 36px;
+    }
+    .ireland-pointer {
+        top: 29%;
+        left:44.5%;
+        width: 36px;
+        height: 36px;
+    }
+    .france-pointer {
+        top: 32%;
+        left:46.8%;
+        width: 36px;
+        height: 36px;
+    }
+    .germany-pointer {
+        top: 29%;
+        left:49.7%;
+        width: 36px;
+        height: 36px;
+    }
+    .united-state-pointer {
+        top: 38%;
+        left:26.5%;
+        width: 36px;
+        height: 36px;
+    }
+    .united-arab-pointer {
+        top: 47.7%;
+        left:61.8%;
+        width: 36px;
+        height: 36px;
+    }
+    .monaco-pointer {
+        top: 35.6%;
+        left:48.5%;
+        width: 36px;
+        height: 36px;
+    }
+    .spain-pointer {
+        top: 38%;
+        left:45.3%;
+        width: 36px;
+        height: 36px;
+    }
+    .australia-pointer {
+        top: 77%;
+        left:84%;
+        width: 36px;
+        height: 36px;
+    }
+    .switzerland-pointer {
+        top: 32.3%;
+        left:48.8%;
+        width: 36px;
+        height: 36px;
+    }
+    .china-pointer {
+        top: 36%;
+        left:76%;
+        width: 36px;
+        height: 36px;
+    }
+    .italy-pointer {
+        top: 37.5%;
+        left:51.5%;
+        width: 36px;
+        height: 36px;
+    }
+    .south-america-pointer {
+        top: 66%;
+        left:31.7%;
+        width: 36px;
+        height: 36px;
+    }
+    .russia-pointer {
+        top: 25%;
+        left:59%;
+        width: 36px;
+        height: 36px;
+    }
+}
+@media (max-width: 1280px) {
+    .plan-slide-group.v-slide-group .v-slide-group__prev{
+        left: 43%;
+    }
+    .plan-slide-group.v-slide-group .v-slide-group__next {
+        right: 43%;
+    }
+    .united-kingdom-pointer {
+        top: 25%;
+        left: 46.8%;
+        width: 30px;
+        height: 30px;
+    }
+    .ireland-pointer {
+        top: 28%;
+        left:44%;
+        width: 30px;
+        height: 30px;
+    }
+    .france-pointer {
+        top: 32%;
+        left:46.6%;
+        width: 30px;
+        height: 30px;
+    }
+    .germany-pointer {
+        top: 29%;
+        left:49.7%;
+        width: 30px;
+        height: 30px;
+    }
+    .united-state-pointer {
+        top: 38%;
+        left:26.5%;
+        width: 30px;
+        height: 30px;
+    }
+    .united-arab-pointer {
+        top: 47.7%;
+        left:61.4%;
+        width: 30px;
+        height: 30px;
+    }
+    .monaco-pointer {
+        top: 35.6%;
+        left:48.3%;
+        width: 30px;
+        height: 30px;
+    }
+    .spain-pointer {
+        top: 38%;
+        left:45.3%;
+        width: 30px;
+        height: 30px;
+    }
+    .australia-pointer {
+        top: 77%;
+        left:84%;
+        width: 30px;
+        height: 30px;
+    }
+    .switzerland-pointer {
+        top: 32.3%;
+        left:48.8%;
+        width: 30px;
+        height: 30px;
+    }
+    .china-pointer {
+        top: 36%;
+        left:76%;
+        width: 30px;
+        height: 30px;
+    }
+    .italy-pointer {
+        top: 37.5%;
+        left:51.5%;
+        width: 30px;
+        height: 30px;
+    }
+    .south-america-pointer {
+        top: 66%;
+        left:31.7%;
+        width: 30px;
+        height: 30px;
+    }
+    .russia-pointer {
+        top: 25%;
+        left:59%;
+        width: 30px;
+        height: 30px;
+    }
+}
+@media (max-width: 1024px) {
+    .plan-slide-group.v-slide-group .v-slide-group__prev{
+        left: 43%;
+    }
+    .plan-slide-group.v-slide-group .v-slide-group__next {
+        right: 43%;
+    }
+    .united-kingdom-pointer {
+        top: 25%;
+        left: 46.5%;
+        width: 28px;
+        height: 28px;
+    }
+    .ireland-pointer {
+        top: 28%;
+        left:44%;
+        width: 28px;
+        height: 28px;
+    }
+    .france-pointer {
+        top: 32%;
+        left:46.7%;
+        width: 28px;
+        height: 28px;
+    }
+    .germany-pointer {
+        top: 28%;
+        left:49.4%;
+        width: 28px;
+        height: 28px;
+    }
+    .united-state-pointer {
+        top: 38%;
+        left:26.5%;
+        width: 28px;
+        height: 28px;
+    }
+    .united-arab-pointer {
+        top: 47.5%;
+        left:61.2%;
+        width: 28px;
+        height: 28px;
+    }
+    .monaco-pointer {
+        top: 36%;
+        left:48.3%;
+        width: 28px;
+        height: 28px;
+    }
+    .spain-pointer {
+        top: 37.5%;
+        left:45%;
+        width: 28px;
+        height: 28px;
+    }
+    .australia-pointer {
+        top: 77%;
+        left:84%;
+        width: 28px;
+        height: 28px;
+    }
+    .switzerland-pointer {
+        top: 32%;
+        left:48.8%;
+        width: 28px;
+        height: 28px;
+    }
+    .china-pointer {
+        top: 36%;
+        left:76%;
+        width: 28px;
+        height: 28px;
+    }
+    .italy-pointer {
+        top: 36.5%;
+        left:51%;
+        width: 28px;
+        height: 28px;
+    }
+    .south-america-pointer {
+        top: 66%;
+        left:31.5%;
+        width: 28px;
+        height: 28px;
+    }
+    .russia-pointer {
+        top: 25%;
+        left:59%;
+        width: 28px;
+        height: 28px;
+    }
+}
+@media (max-width: 800px) {
+    .plan-slide-group.v-slide-group .v-slide-group__prev{
+        left: 40%;
+    }
+    .plan-slide-group.v-slide-group .v-slide-group__next {
+        right: 40%;
+    }
+    .united-kingdom-pointer {
+        top:24%;
+        left: 46%;
+        width: 24px;
+        height: 24px;
+    }
+    .ireland-pointer {
+        top: 28%;
+        left:44%;
+        width: 24px;
+        height: 24px;
+    }
+    .france-pointer {
+        top: 32%;
+        left:46.5%;
+        width: 24px;
+        height: 24px;
+    }
+    .germany-pointer {
+        top: 27%;
+        left:49%;
+        width: 24px;
+        height: 24px;
+    }
+    .united-state-pointer {
+        top: 38%;
+        left:26%;
+        width: 24px;
+        height: 24px;
+    }
+    .united-arab-pointer {
+        top: 47%;
+        left:61%;
+        width: 24px;
+        height: 24px;
+    }
+    .monaco-pointer {
+        top: 34%;
+        left:48%;
+        width: 24px;
+        height: 24px;
+    }
+    .spain-pointer {
+        top: 37%;
+        left:44.8%;
+        width: 24px;
+        height: 24px;
+    }
+    .australia-pointer {
+        top: 75%;
+        left:83%;
+        width: 24px;
+        height: 24px;
+    }
+    .switzerland-pointer {
+        top: 31%;
+        left:48.4%;
+        width: 24px;
+        height: 24px;
+    }
+    .china-pointer {
+        top: 34%;
+        left:76%;
+        width: 24px;
+        height: 24px;
+    }
+    .italy-pointer {
+        top: 36%;
+        left:50.7%;
+        width: 24px;
+        height: 24px;
+    }
+    .south-america-pointer {
+        top: 66%;
+        left:31%;
+        width: 24px;
+        height: 24px;
+    }
+    .russia-pointer {
+        top: 24.5%;
+        left:58.5%;
+        width: 24px;
+        height: 24px;
+    }
+}
+@media (max-width: 600px) {
+    .plan-slide-group.v-slide-group .v-slide-group__prev{
+        left: 35%;
+    }
+    .plan-slide-group.v-slide-group .v-slide-group__next {
+        right: 35%;
+    }
+    .subject-slide-group.v-slide-group .v-slide-group__prev, .subject-slide-group.v-slide-group .v-slide-group__next {
+        z-index: 9;
+        position: absolute;
+        top: 22px;
+        background: none;
+        height: 48px;
+        width: 48px;
+        border-radius: 22px;
+        box-shadow: none;
+    }
+    .subject-slide-group.v-slide-group .v-slide-group__prev {
+        left: 0px ;
+    }
+    .subject-slide-group.v-slide-group .v-slide-group__next {
+        right: 0px ;
+    }
+    .united-kingdom-pointer {
+        top: 21%;
+        left: 45%;
+        width: 24px;
+        height: 24px;
+    }
+    .ireland-pointer {
+        top: 25%;
+        left:43%;
+        width: 24px;
+        height: 24px;
+    }
+    .france-pointer {
+        top: 30%;
+        left:45%;
+        width: 24px;
+        height: 24px;
+    }
+    .germany-pointer {
+        top: 25%;
+        left:48%;
+        width: 24px;
+        height: 24px;
+    }
+    .united-state-pointer {
+        top: 36%;
+        left:24%;
+        width: 24px;
+        height: 24px;
+    }
+    .united-arab-pointer {
+        top: 44%;
+        left:59.5%;
+        width: 24px;
+        height: 24px;
+    }
+    .monaco-pointer {
+        top: 33%;
+        left:47%;
+        width: 24px;
+        height: 24px;
+    }
+    .spain-pointer {
+        top: 35%;
+        left:44%;
+        width: 24px;
+        height: 24px;
+    }
+    .australia-pointer {
+        top: 71%;
+        left:82%;
+        width: 24px;
+        height: 24px;
+    }
+    .switzerland-pointer {
+        top: 29%;
+        left:47.4%;
+        width: 24px;
+        height: 24px;
+    }
+    .italy-pointer {
+        top: 35%;
+        left:49.6%;
+        width: 24px;
+        height: 24px;
+    }
+    .china-pointer {
+        top: 33%;
+        left:74%;
+        width: 24px;
+        height: 24px;
+    }
+    .south-america-pointer {
+        top: 62%;
+        left:30%;
+        width: 24px;
+        height: 24px;
+    }
+    .russia-pointer {
+        top: 22%;
+        left:57.5%;
+        width: 24px;
+        height: 24px;
+    }
+}

@@ -1,0 +1,72 @@
+{
+  "menu": [
+    {
+      "name": "Dashboard",
+      "icon": "mdi-label-variant",
+      "slug": "admin.dashboard",
+      "submenu": [
+        {
+          "url": "/",
+          "name": "Analytics",
+          "icon": "mdi-google-analytics",
+          "slug": "admin.dashboard"
+        }
+      ]
+    },
+    {
+      "name": "User Stuff",
+      "icon": "mdi-account-box",
+      "slug": "admin.users",
+      "submenu": [
+        {
+          "url": "users/tutors",
+          "name": "Tutors Management",
+          "icon": "mdi-cast-education",
+          "slug": "admin.users.tutors"
+        },
+        {
+          "url": "users/parents",
+          "name": "Parents Management",
+          "icon": "mdi-cast-education",
+          "slug": "admin.users.parents"
+        },
+        {
+          "url": "users/chats",
+          "name": "Chats Management",
+          "icon": "mdi-message-text-fast",
+          "slug": "admin.users.chats"
+        },
+        {
+          "url": "users/bookings",
+          "name": "Booking Management",
+          "icon": "mdi-wrench-clock",
+          "slug": "admin.users.bookings"
+        },
+        {
+          "url": "users/categories",
+          "name": "Categories Management",
+          "icon": "mdi-shape-plus-outline",
+          "slug": "admin.users.categories"
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "icon": "mdi-message-text-fast",
+      "slug": "admin.chats",
+      "url": "chats"
+    },
+    {
+      "name": "Pricing",
+      "icon": "mdi-package",
+      "slug": "admin.pricing",
+      "url": "pricing"
+    },
+    {
+      "name": "Inbox",
+      "icon": "mdi-inbox",
+      "slug": "admin.inbox",
+      "url": "inbox"
+    }
+  ]
+}
