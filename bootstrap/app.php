@@ -29,7 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(ShareErrorsFromSession::class);
         $middleware->group('api', [
             EncryptCookies::class,
-            ValidateCsrfToken::class,
+            // ValidateCsrfToken::class,
             'throttle:api'
         ]);
         $middleware->group('dashboard', [

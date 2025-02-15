@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { socialMedias } from "@/components/auth/utils";
 import { ref, computed } from "vue";
-import appConfigs from "@/app/appConfigurations";
 import { UserType } from "@/app/http/types";
-import { fakeBackendService } from "@/app/http/httpServiceProvider";
 import { useRouter } from "vue-router";
+import axios from "@/app/http/axios";
+
 const router = useRouter();
 
 const loading = ref(false);
@@ -35,7 +35,6 @@ const onSignUp = async () => {
     if (!isValidFormData.value) {
       return;
     }
-    const auth = appConfigs.auth;
     const { password, username, email } = formData.value;
 
     const payload: UserType = {
@@ -44,21 +43,9 @@ const onSignUp = async () => {
       email: email.value,
     };
 
-    if (auth === "fakebackend") {
-      const data = await fakeBackendService.signUp(payload);
-      if (data) {
-        successMsg.value = data;
-        isSubmitted.value = false;
-        formData.value = {
-          email: { value: "", isValid: false },
-          username: { value: "", isValid: false },
-          password: { value: "", isValid: false },
-        };
-
-        setTimeout(() => {
-          router.push({ path: "/signin" });
-        }, 2000);
-      }
+    const response = await axios.post('/api/register', payload);
+    if(response) {
+      router.push({ path: "/signin" });
     }
   } catch (error: any) {
     errorMsg.value = error.message;

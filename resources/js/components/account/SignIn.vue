@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { socialMedias } from "@/components/auth/utils";
 import { ref, computed } from "vue";
-import appConfigs from "@/app/appConfigurations";
 import { useRouter } from "vue-router";
 import { UserType } from "@/app/http/types";
 import axios from "@/app/http/axios";

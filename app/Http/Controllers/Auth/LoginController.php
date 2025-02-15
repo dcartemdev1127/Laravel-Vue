@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends AbstractLoginController
 {
@@ -33,7 +34,8 @@ class LoginController extends AbstractLoginController
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'email' => 'required|email',
+            'name' => 'required',
+            // 'email' => 'required|email',
             'password' => 'required',
         ]);
         $credentials = $request->only('email', 'password');
@@ -56,6 +58,31 @@ class LoginController extends AbstractLoginController
             ], 422);
         }
         return $this->sendLoginResponse($user, $request, $remember);
+    }
+
+    public function loginUser() {
+        $credentials = request(['username', 'password']);
+
+        if (! $token = JWTAuth::attempt($credentials)) {
+            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        }
+  
+        $success = $this->respondWithToken($token);
+   
+        return $this->sendResponse($success, 'User login successfully.');
+    }
+
+    public function refresh() {
+        $success = $this->respondWithToken(JWTAuth::refresh());
+        return $this->sendResponse($success, 'Refresh token return successfully.');
+    }
+
+    protected function respondWithToken($token) {
+        return [
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60
+        ];
     }
 
 }
