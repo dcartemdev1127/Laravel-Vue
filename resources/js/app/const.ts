@@ -60,3 +60,10 @@ export const DIR = {
   LTR: "ltr",
   RTL: "rtl",
 };
+
+export const cities = [
+  'City1',
+  'City2',
+  'City3',
+  'City4'
+]

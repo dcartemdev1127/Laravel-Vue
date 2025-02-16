@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { socialMedias } from "@/components/auth/utils";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { UserType } from "@/app/http/types";
 import { useRouter } from "vue-router";
 import axios from "@/app/http/axios";
+import { cities } from '@/app/const';
 
 const router = useRouter();
 
@@ -16,6 +17,9 @@ const formData = ref({
   username: { value: "", isValid: false },
   password: { value: "", isValid: false },
 });
+const city = ref('');;
+const department = ref('');
+const departments = ref([]);
 
 const isValidFormData = computed(() => {
   return (
@@ -41,6 +45,8 @@ const onSignUp = async () => {
       password: password.value,
       username: username.value,
       email: email.value,
+      city: city.value,
+      department_id: department.value
     };
 
     const response = await axios.post('/api/register', payload);
@@ -53,6 +59,13 @@ const onSignUp = async () => {
     loading.value = false;
   }
 };
+
+onMounted(async () => {
+  const response = await axios.get('/api/department');
+  if(response) {
+    departments.value = response.data
+  }
+})
 </script>
 <template>
   <div class="h-100 d-flex align-center justify-center">
@@ -107,6 +120,31 @@ const onSignUp = async () => {
               :isSubmitted="isSubmitted"
               placeholder="Enter username"
               hide-details
+            />
+            <div class="font-weight-medium mb-2 mt-5">
+              City <i class="ph-asterisk ph-xs text-danger" />
+            </div>
+            <v-select
+              label="Select your city"
+              variant="outlined"
+              :items="cities"
+              density="compact"
+              class="mt-2"
+              isReuired
+              v-model="city"
+            />
+            <div class="font-weight-medium mb-2 mt-5">
+              Department <i class="ph-asterisk ph-xs text-danger" />
+            </div>
+            <v-select
+              label="Select your department"
+              variant="outlined"
+              :items="departments"
+              item-title="name"
+              item-value="id"
+              density="compact"
+              class="mt-2"
+              v-model="department"
             />
             <div class="d-flex justify-space-between align-center mt-3 pb-2">
               <div class="font-weight-medium">

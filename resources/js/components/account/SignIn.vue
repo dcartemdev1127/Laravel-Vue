@@ -37,7 +37,7 @@ const onSignIn = async () => {
 
     const response = await axios.post('/api/login', payload);
     if(response) {
-      localStorage.setItem('jwtToken', response.data.token);
+      localStorage.setItem('jwtToken', response.data.data.access_token);
       router.push({path: '/'});
     }
 

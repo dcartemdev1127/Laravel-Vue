@@ -22,6 +22,8 @@ class AuthController extends BaseController
             'username' => 'required',
             'email' => 'required|email',
             'password' => 'required',
+            'department_id' => 'required',
+            'city' => 'required'
             // 'confirm_password' => 'required|same:password',
         ]);
      

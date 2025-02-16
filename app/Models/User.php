@@ -4,12 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use App\Models\Department;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -24,6 +26,8 @@ class User extends Authenticatable implements JWTSubject
         'username',
         'email',
         'password',
+        'department_id',
+        'city'
     ];
 
     /**
@@ -45,6 +49,10 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed'
     ];
+
+    public function department(): BelongsTo {
+        return $this->belongsTo(Department::class);
+    }
 
     public function toVueObject():array
     {
