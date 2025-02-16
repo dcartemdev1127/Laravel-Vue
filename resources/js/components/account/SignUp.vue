@@ -59,7 +59,7 @@ const onSignUp = async () => {
     <div class="w-100">
       <v-card-title class="text-center">
         <h5 class="text-h6 font-weight-bold">Create your free account</h5>
-        <div class="text-muted">Get your free Steex account now</div>
+        <div class="text-muted">Get your account now</div>
       </v-card-title>
       <v-card-text class="mt-5">
         <v-row justify="center" class="align-center">

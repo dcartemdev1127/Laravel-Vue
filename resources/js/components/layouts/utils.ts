@@ -17,6 +17,24 @@ import { Avatar2, Avatar8 } from "@/assets/images/users/utils";
 
 export const menuItems: MenuItemType[] = [
   {
+    label: "Category",
+    icon: "ph-folder-open",
+    link: "/category",
+    id: "sidebarCategory",
+  },
+  {
+    label: "Department",
+    icon: "ph-folder-open",
+    link: "/department",
+    id: "sidebarDepartment",
+  },
+  {
+    label: "User Management",
+    icon: "ph-folder-open",
+    link: '/users',
+    id: 'sidebarUsers'
+  },
+  {
     label: "menu",
     isHeader: true,
     id: "HeaderMenu",
@@ -197,25 +215,25 @@ export const menuItems: MenuItemType[] = [
       },
     ],
   },
-  // {
-  //   label: "pages",
-  //   icon: "ph-address-book",
-  //   id: "sidebarPages",
-  //   prefix: "/pages",
-  //   subMenu: [
-  //     { label: "starter", link: "/pages/starter" },
-  //     { label: "profile", link: "/pages/profile" },
-  //     { label: "profile-setting", link: "/pages/profile-settings" },
-  //     { label: "contacts", link: "/pages/contacts" },
-  //     { label: "timeline", link: "/pages/timeline" },
-  //     { label: "faqs", link: "/pages/faqs" },
-  //     { label: "pricing", link: "/pages/pricing" },
-  //     { label: "maintenance", link: "/pages/maintenance" },
-  //     { label: "coming-soon", link: "/pages/coming-soon" },
-  //     { label: "privacy-policy", link: "/pages/privacy-policy" },
-  //     { label: "term-conditions", link: "/pages/term-conditions" },
-  //   ],
-  // },
+  {
+    label: "pages",
+    icon: "ph-address-book",
+    id: "sidebarPages",
+    prefix: "/pages",
+    subMenu: [
+      { label: "starter", link: "/pages/starter" },
+      { label: "profile", link: "/pages/profile" },
+      { label: "profile-setting", link: "/pages/profile-settings" },
+      { label: "contacts", link: "/pages/contacts" },
+      { label: "timeline", link: "/pages/timeline" },
+      { label: "faqs", link: "/pages/faqs" },
+      { label: "pricing", link: "/pages/pricing" },
+      { label: "maintenance", link: "/pages/maintenance" },
+      { label: "coming-soon", link: "/pages/coming-soon" },
+      { label: "privacy-policy", link: "/pages/privacy-policy" },
+      { label: "term-conditions", link: "/pages/term-conditions" },
+    ],
+  },
   // {
   //   label: "components",
   //   isHeader: true,

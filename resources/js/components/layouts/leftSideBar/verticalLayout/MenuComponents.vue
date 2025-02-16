@@ -68,7 +68,7 @@ const onClick = (path: string, isSingleLevel?: boolean) => {
           >
             <template #title>
               <div class="menu-title">
-                {{ $t(`t-${menuItem.label}`) }}
+                {{ menuItem.label }}
               </div>
             </template>
           </v-list-item>
@@ -93,7 +93,7 @@ const onClick = (path: string, isSingleLevel?: boolean) => {
                   :class="isCompactSideBar ? 'pa-2' : 'd-flex align-center'"
                 >
                   <i :class="menuItem.icon" class="ph-lg" />
-                  <div>{{ $t(`t-${menuItem.label}`) }}</div>
+                  <div>{{ menuItem.label }}</div>
                 </div>
               </router-link>
             </template>
@@ -112,7 +112,7 @@ const onClick = (path: string, isSingleLevel?: boolean) => {
                 :class="isCompactSideBar ? 'pa-2' : 'd-flex align-center'"
               >
                 <i :class="menuItem.icon" class="ph-lg"></i>
-                <span>{{ $t(`t-${menuItem.label}`) }}</span>
+                <span>{{ menuItem.label }}</span>
               </span>
             </template>
             <template #append="{ isActive }">
@@ -145,7 +145,7 @@ const onClick = (path: string, isSingleLevel?: boolean) => {
             >
               <template #title>
                 <span class="nav-link menu-link py-0">
-                  {{ $t(`t-${subMenu.label}`) }}
+                  {{ subMenu.label }}
                 </span>
               </template>
               <template #append="{ isActive }">
@@ -172,11 +172,11 @@ const onClick = (path: string, isSingleLevel?: boolean) => {
                 :to="{ path: nestedItem.link }"
               >
                 <span class="nav-link menu-link py-0">
-                  {{ $t(`t-${nestedItem.label}`) }}
+                  {{ nestedItem.label }}
                 </span>
               </router-link>
               <span v-else class="nav-link menu-link py-0">
-                {{ $t(`t-${nestedItem.label}`) }}
+                {{ nestedItem.label }}
               </span>
             </template>
           </v-list-item>

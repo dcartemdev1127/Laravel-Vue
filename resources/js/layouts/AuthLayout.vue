@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import Banner from "@/components/auth/Banner.vue";
+import back from '@/assets/images/background.png';
+
 </script>
 <template>
   <div style="height: 100dvh" class="d-flex align-center auth-wrapper">

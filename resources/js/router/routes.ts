@@ -970,9 +970,20 @@ const myRoute = [
   {
     path: `/department`,
     name: "department",
-    component: () => import("@/views/forms/Layouts.vue"),
+    component: () => import("@/views/department/Department.vue"),
     meta: { title: "Department", authRequired: true },
   },
+  {
+    path: `/category`,
+    name: "category",
+    component: () => import("@/views/category/Category.vue"),
+    meta: { title: "Category", authRequired: true },
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: () => import("@/views/users/UserManagement.vue"),
+  }
 ].map((data) => {
   return {
     ...data,
@@ -1007,7 +1018,7 @@ export const routes = [
   // ...ticketsRoutes,
   // ...realEstateRoutes,
   ...authRoutes,
-  // ...pagesRoutes,
+  ...pagesRoutes,
   // ...vuetifyUIRoutes,
   // ...advanceUIRoutes,
   // ...customUIRoutes,
