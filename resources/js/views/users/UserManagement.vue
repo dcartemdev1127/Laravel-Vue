@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import axios from "@/app/http/axios";
-import { cities } from '@/app/const';
+import { cities, roles } from '@/app/const';
+import { useToast } from 'vue-toast-notification';
 
-const errorMsg = ref('');
-const successMsg = ref('');
+const toast = useToast();
 const isShow = ref(false);
 const selectId = ref('');
+const loadingTable = ref(false);
 const headers = ref([
     {key: 'name', title: 'Name', sortable: true},
     {key: 'city', title: 'City', sortable: true},
@@ -29,7 +30,7 @@ const handleUpdate = async (id: string) => {
         selectId.value = id;
         username.value = response.data.username;;
         city.value = response.data.city;
-        department.value = response.data.department.name;
+        department.value = response.data.department_id;
         role.value = response.data.role;
     }
 };
@@ -38,26 +39,36 @@ const handleDelete = async (id: string) => {
     const response = await axios.delete(`/api/users/${id}`);
     if(response) {
         users.value.filter(item => item.id != id);
+        toast.success('User delete successfully.', {position: 'top-right'});
     }
 };
 
 const updateUser = async () => {
     const data = {
         username: username.value,
-        department: department.value,
+        department_id: department.value,
         city: city.value,
         role: role.value
     }
     const response = await axios.post(`/api/users/${selectId.value}/update`, data)
     if(response) {
         isShow.value = false;
+        toast.success('User update successfully.', {position: 'top-right'});
+        // users.value.map(item => item.id == selectId.value ? response.data : item);
+        users.value.map(item => {
+            if(item.id == selectId.value) {
+                users.value[item.id] = response.data;
+            }
+        })
     }
 }
 
 onMounted(async () => {
+    loadingTable.value = true;
     const response = await axios.get('/api/users');
     if(response) {
         users.value = response.data;
+        loadingTable.value = false;
     }
     const depts = await axios.get('/api/department');
     if(depts) {
@@ -73,6 +84,7 @@ onMounted(async () => {
                 :headers="headers"
                 :items="users"
                 style="border-radius: 12px;"
+                :loading="loadingTable"
             >
                 <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
                     <tr>
@@ -102,6 +114,7 @@ onMounted(async () => {
         </v-col>
     </v-row>
     <v-dialog
+        class="w-75"
         v-model="isShow"
     >
         <v-card>
@@ -110,62 +123,54 @@ onMounted(async () => {
             </v-card-title>
             <v-card-text class="mt-5">
                 <v-row justify="center" class="align-center">
-                <v-col cols="12" lg="8">
-                    <v-alert
-                    v-if="errorMsg"
-                    class="mb-3"
-                    color="danger"
-                    variant="tonal"
-                    density="compact"
-                    >
-                    {{ errorMsg }}
-                    </v-alert>
-
-                    <v-alert
-                    v-if="successMsg"
-                    class="mb-3"
-                    color="success"
-                    variant="tonal"
-                    density="compact"
-                    >
-                    {{ successMsg }}
-                    </v-alert>
-                    <div class="font-weight-medium mb-2 mt-5">
-                    Username <i class="ph-asterisk ph-xs text-danger" />
-                    </div>
-                    <TextField
-                    v-model="username"
-                    isRequired
-                    placeholder="Enter username"
-                    hide-details
-                    />
-                    <div class="font-weight-medium mb-2 mt-5">
-                    City <i class="ph-asterisk ph-xs text-danger" />
-                    </div>
-                    <v-select
-                    label="Select your city"
-                    variant="outlined"
-                    :items="cities"
-                    density="compact"
-                    class="mt-2"
-                    isReuired
-                    v-model="city"
-                    />
-                    <div class="font-weight-medium mb-2 mt-5">
-                    Department <i class="ph-asterisk ph-xs text-danger" />
-                    </div>
-                    <v-select
-                    label="Select your department"
-                    variant="outlined"
-                    :items="departments"
-                    item-title="name"
-                    item-value="id"
-                    density="compact"
-                    class="mt-2"
-                    v-model="department"
-                    />
-                    
-                </v-col>
+                    <v-col cols="12" lg="8">
+                        <div class="font-weight-medium mb-2 mt-5">
+                        Username <i class="ph-asterisk ph-xs text-danger" />
+                        </div>
+                        <v-text-field
+                        v-model="username"
+                        isRequired
+                        placeholder="Enter username"
+                        hide-details
+                        />
+                        <div class="font-weight-medium mb-2 mt-5">
+                        Role <i class="ph-asterisk ph-xs text-danger" />
+                        </div>
+                        <v-select
+                        label="Select your role"
+                        variant="outlined"
+                        :items="roles"
+                        density="compact"
+                        class="mt-2"
+                        isReuired
+                        v-model="role"
+                        />
+                        <div class="font-weight-medium mb-2 mt-5">
+                        City <i class="ph-asterisk ph-xs text-danger" />
+                        </div>
+                        <v-select
+                        label="Select your city"
+                        variant="outlined"
+                        :items="cities"
+                        density="compact"
+                        class="mt-2"
+                        isReuired
+                        v-model="city"
+                        />
+                        <div class="font-weight-medium mb-2 mt-5">
+                        Department <i class="ph-asterisk ph-xs text-danger" />
+                        </div>
+                        <v-select
+                        label="Select your department"
+                        variant="outlined"
+                        :items="departments"
+                        item-title="name"
+                        item-value="id"
+                        density="compact"
+                        class="mt-2"
+                        v-model="department"
+                        />
+                    </v-col>
                 </v-row>
             </v-card-text>
             <v-divider>

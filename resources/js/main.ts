@@ -2,6 +2,8 @@ import { createApp, App } from "vue";
 import { registerPlugins } from "./plugins";
 import i18n from "./plugins/i18n";
 import AppMain from "./App.vue";
+import ToastPlugin from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-bootstrap.css';
 
 import "./assets/scss/app.scss";
 
@@ -33,6 +35,11 @@ registerPlugins(app);
 
 app.use(i18n);
 app.use(VueApexCharts);
+app.use(ToastPlugin, {
+    duration: 2000,
+    dismissable: true,
+    position: 'top-right'
+})
 
 app.component("CountTo", CountTo);
 app.component("ListMenu", ListMenu);

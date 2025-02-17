@@ -35,6 +35,12 @@ export const menuItems: MenuItemType[] = [
     id: 'sidebarUsers'
   },
   {
+    label: 'Issues',
+    icon: "ph-folder-open",
+    link: '/issues',
+    id: 'sidebarIssues'
+  },
+  {
     label: "menu",
     isHeader: true,
     id: "HeaderMenu",

@@ -983,6 +983,9 @@ const myRoute = [
     path: '/users',
     name: 'users',
     component: () => import("@/views/users/UserManagement.vue"),
+  },
+  {
+    path: '/'
   }
 ].map((data) => {
   return {

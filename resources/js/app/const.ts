@@ -66,4 +66,10 @@ export const cities = [
   'City2',
   'City3',
   'City4'
+];
+
+export const roles = [
+  'super admin',
+  'admin',
+  'user'
 ]
