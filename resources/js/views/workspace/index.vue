@@ -78,7 +78,7 @@ onMounted(async () => {
                     <template v-slot:item="{ item }">
                         <tr>
                             <td>{{ item.name }}</td>
-                            <td>{{ item.status }}</td>
+                            <td>{{ item.status ? 'Enable' : 'Disable' }}</td>
                             <td>{{ item.form }}</td>
                             <td>
                                 <div>

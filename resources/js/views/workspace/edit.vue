@@ -14,8 +14,12 @@ const categories = ref([]);
 const isShow = ref(false);
 const cat_name = ref('');
 
-const handleSave = () => {
-    router.push({path: '/workspace'});
+const handleSave = async () => {
+    const response = await axios.post(`/api/workspace/${workspace_id}`, {name: name.value, status: status.value});
+    if(response) {
+        router.push({path: '/workspace'});
+        toast.success('Workspace updated successfully.', {position: 'top-right'});
+    }
 }
 
 const handleCreate = async () => {
@@ -39,7 +43,7 @@ onMounted(async () => {
     const response = await axios.get(`/api/workspace/${workspace_id}`);
     if(response) {
         name.value = response.data.name;
-        status.value = response.data.status;
+        status.value = !!response.data.status;
         categories.value = response.data.categories;
     }
 })
@@ -57,7 +61,7 @@ onMounted(async () => {
     </v-row>
     <v-row>
         <v-col cols="12">
-            <div class="font-weight-medium mb-1 mt-5">
+            <div class="font-weight-medium mt-5">
                 Name <i class="ph-asterisk ph-xs text-danger" />
             </div>
         </v-col>
@@ -70,10 +74,15 @@ onMounted(async () => {
             ></v-text-field>
         </v-col>
         <v-col cols="12">
+            <div class="font-weight-medium mt-5">
+                Status <i class="ph-asterisk ph-xs text-danger" />
+            </div>
+        </v-col>
+        <v-col cols="12">
             <v-switch
                 v-model="status"
                 color="primary"
-                label="Status"
+                :label="status ? 'Enable' : 'Disable'"
                 hide-details
                 >
             </v-switch>
@@ -102,8 +111,16 @@ onMounted(async () => {
                             <v-list-item-title v-text="item.name"></v-list-item-title>
                             <template v-slot:append>
                                 <div>
-                                    <v-btn icon="mdi-pencil-outline" size="small" @click="router.push({path: '/category', query: {id: item.id, workspace_id: workspace_id}})"></v-btn>
-                                    <v-btn icon="mdi-trash-can-outline" size="small" @click="handleDelete(item.id)"></v-btn>
+                                    <v-btn 
+                                        icon="mdi-pencil-outline" 
+                                        size="small" 
+                                        @click="router.push({path: '/category', query: {id: item.id, workspace_id: workspace_id}})">
+                                    </v-btn>
+                                    <v-btn 
+                                        icon="mdi-trash-can-outline" 
+                                        size="small" 
+                                        @click="handleDelete(item.id)">
+                                    </v-btn>
                                 </div>
                             </template>
                         </v-list-item>
