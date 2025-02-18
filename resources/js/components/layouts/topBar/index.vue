@@ -131,12 +131,12 @@ onUnmounted(() => {
         </div>
         <div class="d-flex align-center">
           <div class="dropdown topbar-head-dropdown ms-1 header-item">
-            <BrandList />
+            <!-- <BrandList />
             <LanguageDropDown />
             <Cart />
             <ScreenSize />
             <SiteMode />
-            <Notifications />
+            <Notifications /> -->
             <Profile />
           </div>
         </div>

@@ -976,7 +976,13 @@ const myRoute = [
   {
     path: `/category`,
     name: "category",
-    component: () => import("@/views/category/Category.vue"),
+    component: () => import("@/views/category/index.vue"),
+    meta: { title: "Category", authRequired: true },
+  },
+  {
+    path: `/edit_category`,
+    name: "edit_category",
+    component: () => import("@/views/category/edit.vue"),
     meta: { title: "Category", authRequired: true },
   },
   {
@@ -985,7 +991,14 @@ const myRoute = [
     component: () => import("@/views/users/UserManagement.vue"),
   },
   {
-    path: '/'
+    path: '/workspace',
+    name: 'workspace',
+    component: () => import ('@/views/workspace/index.vue')
+  },
+  {
+    path: '/edit_workspace',
+    name: 'edit_workspace',
+    component: () => import ('@/views/workspace/edit.vue')
   }
 ].map((data) => {
   return {

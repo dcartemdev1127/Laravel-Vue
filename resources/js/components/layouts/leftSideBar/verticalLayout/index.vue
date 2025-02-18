@@ -114,18 +114,18 @@ watch(sideBarSize, () => {
       <div class="navbar-brand-box">
         <router-link to="/" class="logo logo-dark">
           <span class="logo-sm">
-            <img src="@/assets/images/logo-sm.png" alt="" height="22" />
+            <img src="@/assets/images/logo-new.png" alt="" height="22" />
           </span>
           <span class="logo-lg">
-            <img src="@/assets/images/logo-dark.png" alt="" height="22" />
+            <img src="@/assets/images/logo-new.png" alt="" height="22" />
           </span>
         </router-link>
         <router-link to="/" class="logo logo-light">
           <span class="logo-sm">
-            <img src="@/assets/images/logo-sm.png" alt="" height="22" />
+            <img src="@/assets/images/logo-new.png" alt="" height="22" />
           </span>
           <span class="logo-lg">
-            <img src="@/assets/images/logo-light.png" alt="" height="22" />
+            <img src="@/assets/images/logo-new.png" alt="" height="22" />
           </span>
         </router-link>
         <v-btn text="" class="header-item btn-vertical-sm-hover">
@@ -162,7 +162,7 @@ watch(sideBarSize, () => {
   >
     <div class="d-flex justify-center navbar-brand-box">
       <v-btn icon href="/" class="logo" variant="text">
-        <img src="@/assets/images/logo-sm.png" alt="" height="22" />
+        <img src="@/assets/images/logo-new.png" alt="" height="22" />
       </v-btn>
     </div>
     <v-divider />

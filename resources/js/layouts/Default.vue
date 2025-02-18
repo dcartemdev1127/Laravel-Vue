@@ -13,7 +13,7 @@ const isHorizontal = computed(() => {
 </script>
 <template>
   <div>
-    <RightSideBar v-if="$vuetify.display.mdAndUp" />
+    <!-- <RightSideBar v-if="$vuetify.display.mdAndUp" /> -->
     <v-layout
       class="main-layout-wrapper justify-center position-relative"
       id="layout-wrapper"
