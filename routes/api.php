@@ -3,7 +3,9 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\IssueController;
+use App\Http\Controllers\StepController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
@@ -50,4 +52,18 @@ Route::prefix('issue')->group(function() {
     Route::post('/', [IssueController::class, 'create']);
     Route::post('/{id}', [IssueController::class, 'update']);
     Route::delete('/{id}', [IssueController::class, 'delete']);
+});
+
+Route::prefix('form')->group(function() {
+    Route::get('/{id}', [FormController::class, 'get']);
+    Route::post('/', [FormController::class, 'create']);
+    Route::post('/{id}', [FormController::class, 'update']);
+});
+
+Route::prefix('step')->group(function() {
+    Route::get('/', [StepController::class, 'index']);
+    Route::get('/{id}', [StepController::class, 'get']);
+    Route::post('/', [StepController::class, 'create']);
+    Route::post('/{id}', [StepController::class, 'update']);
+    Route::delete('/{id}', [StepController::class, 'delete']);
 });

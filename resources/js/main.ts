@@ -4,6 +4,8 @@ import i18n from "./plugins/i18n";
 import AppMain from "./App.vue";
 import ToastPlugin from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-bootstrap.css';
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 import "./assets/scss/app.scss";
 
@@ -51,5 +53,5 @@ app.component("TextField", TextField);
 app.component("TextArea", TextArea);
 // app.directive("maska", vMaska);
 app.component("MazPhoneNumberInput", MazPhoneNumberInput);
-
+app.component('QuillEditor', QuillEditor);
 app.mount("#app");

@@ -79,11 +79,25 @@ onMounted(async () => {
                         <tr>
                             <td>{{ item.name }}</td>
                             <td>{{ item.status ? 'Enable' : 'Disable' }}</td>
-                            <td>{{ item.form }}</td>
+                            <td>
+                                <v-btn 
+                                    icon="mdi-pencil-outline" 
+                                    size="small" 
+                                    @click="router.push({path: '/form', query: {id: item.form_id, workspace_id: item.id}})">
+                                </v-btn>
+                            </td>
                             <td>
                                 <div>
-                                    <v-btn icon="mdi-pencil-outline" size="small" @click="router.push({path: '/edit_workspace', query: {id: item.id}})"></v-btn>
-                                    <v-btn icon="mdi-trash-can-outline" size="small" @click="handleDelete(item.id)"></v-btn>
+                                    <v-btn 
+                                        icon="mdi-pencil-outline" 
+                                        size="small" 
+                                        @click="router.push({path: '/edit_workspace', query: {id: item.id}})">
+                                    </v-btn>
+                                    <v-btn 
+                                        icon="mdi-trash-can-outline" 
+                                        size="small" 
+                                        @click="handleDelete(item.id)">
+                                    </v-btn>
                                 </div>
                             </td>
                         </tr>
