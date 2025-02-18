@@ -980,12 +980,6 @@ const myRoute = [
     meta: { title: "Category", authRequired: true },
   },
   {
-    path: `/edit_category`,
-    name: "edit_category",
-    component: () => import("@/views/category/edit.vue"),
-    meta: { title: "Category", authRequired: true },
-  },
-  {
     path: '/users',
     name: 'users',
     component: () => import("@/views/users/UserManagement.vue"),
@@ -999,7 +993,12 @@ const myRoute = [
     path: '/edit_workspace',
     name: 'edit_workspace',
     component: () => import ('@/views/workspace/edit.vue')
-  }
+  },
+  {
+    path: '/issue',
+    name: 'issue',
+    component: () => import ('@/views/issue/index.vue')
+  },
 ].map((data) => {
   return {
     ...data,

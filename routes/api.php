@@ -40,7 +40,7 @@ Route::prefix('workspace')->group(function() {
     Route::get('/', [WorkspaceController::class, 'index']);
     Route::get('/{id}', [WorkspaceController::class, 'get']);
     Route::post('/', [WorkspaceController::class, 'create']);
-    Route::post('/{id}/update', [WorkspaceController::class, 'update']);
+    Route::post('/{id}', [WorkspaceController::class, 'update']);
     Route::delete('/{id}', [WorkspaceController::class, 'delete']);
 });
 

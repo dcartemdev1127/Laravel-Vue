@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('issues', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('status')->deafult(true);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
