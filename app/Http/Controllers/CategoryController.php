@@ -22,6 +22,11 @@ class CategoryController extends Controller
         return response()->json($result, 200);
     }
 
+    public function update(Request $request, $id) {
+        $result = Category::find($id)->update($request->all());
+        return response()->json($result, 200);
+    }
+
     public function delete(Request $request, $id) {
         $category = Category::find($id);
         $category->delete();
