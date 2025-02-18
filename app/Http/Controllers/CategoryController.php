@@ -12,8 +12,8 @@ class CategoryController extends Controller
         return response()->json($result, 200);
     }
 
-    public function getCategory(Request $request, $id) {
-        $result  = Category::find($id);
+    public function get(Request $request, $id) {
+        $result  = Category::with('issues')->find($id);
         return response()->json($result, 200);
     }
 
@@ -26,5 +26,10 @@ class CategoryController extends Controller
         $category = Category::find($id);
         $category->delete();
         return response()->json(['success'=>true], 200);
+    }
+
+    public function getByWorkspace(Request $request, $id) {
+        $result = Category::where('workspace_id', $id)->get();
+        return response()->json($result, 200);
     }
 }
