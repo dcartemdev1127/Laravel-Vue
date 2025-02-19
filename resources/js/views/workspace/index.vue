@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import axios from "@/app/http/axios";
 import {useToast} from 'vue-toast-notification';
 import { useRouter } from 'vue-router';
+import Swal from "sweetalert2";
 
 const router = useRouter();
 const toast = useToast();
@@ -17,9 +18,10 @@ const loadingTable = ref(false);
 const isShow = ref(false);
 const workspaces = ref([]);
 const name = ref('');
+const status = ref(true);
 
 const handleCreate = async () => {
-    const response = await axios.post('/api/workspace', {name: name.value});
+    const response = await axios.post('/api/workspace', {name: name.value, status: status.value});
     if(response) {
         toast.success('Create workspace successfully', {position: 'top-right'});
         workspaces.value = workspaces.value.concat(response.data);
@@ -27,13 +29,24 @@ const handleCreate = async () => {
     }
 }
 
-const handleDelete = async (id: string) => {
-    const response = await axios.delete(`/api/workspace/${id}`);
-    if(response) {
-        workspaces.value = workspaces.value.filter(item => item.id != id);
-        toast.success('Workspace deleted successfully.', {position: 'top-right'});
-        isShow.value = false;
-    }
+const handleDelete = (id: string) => {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const response = await axios.delete(`/api/workspace/${id}`);
+            if(response) {
+                workspaces.value = workspaces.value.filter(item => item.id != id);
+            }
+            Swal.fire("Deleted!", "Workspace deleted successfully.", "success");
+        }
+    });
 }
 
 onMounted(async () => {
@@ -51,7 +64,7 @@ onMounted(async () => {
         <v-row justify="end" class="mt-5">
             <v-btn
                 class="mr-5"
-                color="blue"
+                color="primary"
                 @click="isShow = true"
             >
                 ADD
@@ -94,6 +107,7 @@ onMounted(async () => {
                                         @click="router.push({path: '/edit_workspace', query: {id: item.id}})">
                                     </v-btn>
                                     <v-btn 
+                                        density="comfortable"
                                         icon="mdi-trash-can-outline" 
                                         size="small" 
                                         @click="handleDelete(item.id)">
@@ -114,20 +128,21 @@ onMounted(async () => {
             <v-card-title class="text-center">
                 <h5 class="text-h6 font-weight-bold">Add workspace</h5>
             </v-card-title>
-            <v-card-text class="mt-5">
-                <v-row justify="center" class="align-center">
-                    <v-col cols="12">
-                        <div class="font-weight-medium mb-2 mt-5">
-                            Workspace Name <i class="ph-asterisk ph-xs text-danger" />
-                        </div>
-                        <v-text-field
-                            v-model="name"
-                            isRequired
-                            placeholder="Enter workspace name"
-                            hide-details
-                        />
-                    </v-col>
-                </v-row>
+            <v-card-text>
+                <div class="font-weight-bold mb-2 mt-3">Name <i class="ph-asterisk ph-xs text-danger" /></div>
+                <TextField
+                    v-model="name"
+                    hide-details
+                    placeholder="Enter workspace name"
+                />
+                <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
+                <v-switch
+                    v-model="status"
+                    color="primary"
+                    :label="status ? 'Enable' : 'Disable'"
+                    hide-details
+                    >
+                </v-switch>
             </v-card-text>
             <v-divider>
             </v-divider>

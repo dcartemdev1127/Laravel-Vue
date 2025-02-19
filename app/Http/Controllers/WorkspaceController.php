@@ -12,7 +12,9 @@ class WorkspaceController extends Controller
     }
 
     public function get(Request $request, $id) {
-        $result = Workspace::with('categories')->find($id);
+        $result = Workspace::with(['categories' => function ($query) {
+            $query->orderBy('order');
+        }])->find($id);
         return response()->json($result, 200);
     }
 
