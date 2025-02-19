@@ -13,7 +13,8 @@ class Category extends Model
     protected $fillable = [
         'name',
         'status',
-        'workspace_id'
+        'workspace_id',
+        'order'
     ];
 
     public function workspace(): BelongsTo {

@@ -13,7 +13,9 @@ class CategoryController extends Controller
     }
 
     public function get(Request $request, $id) {
-        $result  = Category::with('issues')->find($id);
+        $result = Category::with(['issues' => function ($query) {
+            $query->orderBy('order');
+        }])->find($id);
         return response()->json($result, 200);
     }
 
