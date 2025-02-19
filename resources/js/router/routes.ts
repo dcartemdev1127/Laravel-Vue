@@ -999,6 +999,16 @@ const myRoute = [
     name: 'issue',
     component: () => import ('@/views/issue/index.vue')
   },
+  {
+    path: '/form',
+    name: 'form',
+    component: () => import ('@/views/form/index.vue')
+  },
+  {
+    path: '/step',
+    name: 'step',
+    component: () => import ('@/views/step/index.vue')
+  },
 ].map((data) => {
   return {
     ...data,

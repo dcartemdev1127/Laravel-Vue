@@ -59,7 +59,7 @@
         "saas": "^1.0.0",
         "sass-loader": "^16.0.4",
         "simplebar": "^6.3.0",
-        "sweetalert2": "^11.16.0",
+        "sweetalert2": "11.8",
         "swiper": "^11.2.3",
         "tailwindcss": "^3.4.5",
         "uuid": "^11.0.5",
