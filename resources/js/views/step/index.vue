@@ -5,7 +5,12 @@ import { useRouter, useRoute } from 'vue-router';
 import {useToast} from 'vue-toast-notification';
 import draggable from "vuedraggable";
 import EditFieldModal from "./EditFieldModal.vue";
+import ImageUploader from "@/app/common/components/ImageUploader.vue";
+import { GoogleMap } from 'vue3-google-map'
+import appConfigs from "@/app/appConfigurations";
 
+const apiKey = appConfigs.googleMapAPIKey
+const center = { lat: 42.3455, lng: -71.0983 }
 const toast = useToast();
 const router = useRouter();
 const route = useRoute();
@@ -13,22 +18,23 @@ const step_id = route.query.id;
 const form_id = route.query.form_id;
 const name = ref('');
 const status = ref(true);
+const defaultModel = ref('');
 
 const handleSave = async () => {
-    const response = await axios.post(`/api/step/${step_id}`, {name: name.value, status: status.value, fields: formFields.value});
-    if(response) {
-        router.push({path: '/form', query: {id: form_id}});
-        toast.success('step updated successfully.', {position: 'top-right'});
-    }
+  const response = await axios.post(`/api/step/${step_id}`, {name: name.value, status: status.value, fields: formFields.value});
+  if(response) {
+      router.push({path: '/form', query: {id: form_id}});
+      toast.success('step updated successfully.', {position: 'top-right'});
+  }
 }
 
 onMounted(async () => {
-    const response = await axios.get(`/api/step/${step_id}`);
-    if(response) {
-        name.value = response.data.name;
-        status.value = !!response.data.status;
-        formFields.value = response.data.fields || [];
-    }
+  const response = await axios.get(`/api/step/${step_id}`);
+  if(response) {
+      name.value = response.data.name;
+      status.value = !!response.data.status;
+      formFields.value = response.data.fields || [];
+  }
 });
 
 interface FormField {
@@ -44,19 +50,21 @@ interface FormField {
   value?: number;
   items?: string[];
   options?: string[];
+  radios?: string[];
 }
 
 const components = ref<FormField[]>([
   { id: 1, type: "text", label: "Text Input", name: "text_1" },
   { id: 2, type: "email", label: "Email Input", name: "email_1" },
-  { id: 3, type: "number", label: "Number Input", name: "number_1" },
+  { id: 3, type: "textarea", label: "Textarea", name: "textarea_1" },
   { id: 4, type: "select", label: "Dropdown", name: "select_1", options: ["Option 1", "Option 2"] },
-  { id: 5, type: "list", label: "List Input", name: "list_1", items: [] },
+  { id: 5, type: "list", label: "List Input", name: "list_1", items: ['List 1', 'List 2'] },
   { id: 6, type: "file", label: "File Upload", name: "file_1" },
-  { id: 7, type: "date", label: "Date Picker", name: "date_1" },
+  { id: 7, type: "datetime", label: "Date Time Picker", name: "date_1" },
   { id: 8, type: "google-map", label: "Google Map", name: "map_1" },
   { id: 9, type: "checkbox", label: "Checkbox", name: "checkbox_1" },
   { id: 10, type: "rating", label: "Rating", name: "rating_1", value: 0 },
+  { id: 11, type: "radio", label: "Radio", name: "radio_1", radios: ['Radio 1', 'Radio 2'] },
 ]);
 
 const formFields = ref<FormField[]>([]);
@@ -132,115 +140,200 @@ const addListItem = (field: FormField) => {
 </style>
 
 <template>
-    <v-row justify="end" class="mt-5">
-        <v-btn
-            class="mr-5"
-            color="blue"
-            @click="handleSave()"
-        >
-            SAVE
-        </v-btn>
+    <v-row justify="space-between" class="mt-5">
+      <v-btn
+        class="ml-5"
+        color="primary"
+        @click="router.push({path: '/form', query: {id: form_id}})"
+      >
+        BACK
+      </v-btn>
+      <v-btn
+        class="mr-5"
+        color="primary"
+        @click="handleSave()"
+      >
+        SAVE
+      </v-btn>
     </v-row>
     <v-row>
-        <v-col cols="12">
-            <div class="font-weight-medium mt-5">
-                Name <i class="ph-asterisk ph-xs text-danger" />
-            </div>
-        </v-col>
-        <v-col cols="12">
-            <v-text-field
-                v-model="name"
-                isRequired
-                placeholder="Enter step name"
-                hideDetails
-            ></v-text-field>
-        </v-col>
-        <v-col cols="12">
-            <div class="font-weight-medium mt-5">
-                Status <i class="ph-asterisk ph-xs text-danger" />
-            </div>
-        </v-col>
-        <v-col cols="12">
+      <v-col cols="12" lg="6">
+        <Card title="Edit Step" class="h-100">
+          <v-card-text>
+            <div class="font-weight-bold mb-2 mt-3">Name <i class="ph-asterisk ph-xs text-danger" /></div>
+            <TextField
+              v-model="name"
+              hide-details
+              placeholder="Enter step name"
+            />
+            <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
             <v-switch
-                v-model="status"
-                color="primary"
-                :label="status ? 'Enable' : 'Disable'"
-                hide-details
-                >
+              v-model="status"
+              density="compact"
+              color="primary"
+              :label="status ? 'Enable' : 'Disable'"
+              hide-details
+            >
             </v-switch>
-        </v-col>
+          </v-card-text>
+        </Card>
+      </v-col>
     </v-row>
-    <div class="container">
-    <!-- Left: Component Selection -->
-    <div class="left-panel">
-      <h3>Components</h3>
-      <button v-for="component in components" :key="component.type" @click="addField(component)">
-        {{ component.label }}
-      </button>
-    </div>
 
-    <!-- Center: Drag & Drop Form Builder -->
-    <div class="center-panel">
-      <h3>Form Builder</h3>
-      <draggable v-model="formFields" item-key="id" class="draggable-list">
-        <template #item="{ element }">
-          <div class="form-item">
-            <span>{{ element.label }}</span>
-            <button @click="editField(element)">✏️ Edit</button>
-            <button @click="removeField(element.id)">🗑 Remove</button>
-          </div>
-        </template>
-      </draggable>
-    </div>
-
-    <!-- Right: Preview -->
-<div class="right-panel">
-  <h3>Preview</h3>
-  <div v-for="field in formFields" :key="field.id" class="preview-item">
-    <label>{{ field.label }}</label>
-    
-    <!-- Text Inputs -->
-    <input v-if="['text', 'email', 'number'].includes(field.type)" :type="field.type" :placeholder="field.label" />
-
-    <!-- Dropdown -->
-    <select v-if="field.type === 'select'">
-      <option v-for="option in field.options" :key="option">{{ option }}</option>
-    </select>
-
-    <!-- List Input -->
-    <div v-if="field.type === 'list'">
-      <ul>
-        <li v-for="(item, index) in field.items" :key="index">{{ item }}</li>
-      </ul>
-      <input v-model="newListItem" placeholder="Add item" />
-      <button @click="addListItem(field)">➕ Add</button>
-    </div>
-
-    <!-- File Upload -->
-    <input v-if="field.type === 'file'" type="file" />
-
-    <!-- Date Picker -->
-    <input v-if="field.type === 'date'" type="date" />
-
-    <!-- Google Map -->
-    <div v-if="field.type === 'google-map'" style="width: 100%; height: 200px; background: lightgray;">
-      📍 Google Map Placeholder
-    </div>
-
-    <!-- Checkbox -->
-    <input v-if="field.type === 'checkbox'" type="checkbox" />
-
-    <!-- Rating -->
-    <div v-if="field.type === 'rating'">
-      <span v-for="star in 5" :key="star" @click="field.value = star" style="cursor: pointer;">
-        {{ star <= field.value ? "⭐" : "☆" }}
-      </span>
-    </div>
-  </div>
-</div>
-
-
+    <v-row>
+      <v-col cols="12">
+        <Card title="Edit field" class="h-100">
+          <v-card-text>
+            <v-row>
+              <v-col cols="3">
+                <Card title="Components" class="h-100">
+                  <v-card-text>
+                    <div class="flex flex-col items-start gap-3">
+                      <div 
+                        v-for="component in components"
+                        :key="component.type"
+                        class="flex items-center gap-1"
+                        >
+                        <v-btn
+                          class="inline-flex items-center justify-center border rounded-x5 my-1"
+                          style="border-radius: .75rem"
+                          @click="addField(component)"
+                        >
+                          {{ component.label }}
+                        </v-btn>
+                      </div>
+                    </div>
+                  </v-card-text>
+                </Card>
+              </v-col>
+              <v-col cols="4">
+                <Card title="Fields" class="h-100">
+                  <v-card-text>
+                    <draggable 
+                      v-model="formFields" 
+                      item-key="id"
+                      animation="300"
+                    >
+                      <template #item="{ element }">
+                        <div 
+                          class="d-flex justify-space-between items-center gap-1 border py-1 pl-4 w-full my-1"
+                          style="align-items: center; border-radius: .75rem"
+                        >
+                          <span class="inline-flex items-center justify-center text-sm">{{ element.label }}</span>
+                          <div>
+                            <v-btn
+                              icon="mdi-pencil-outline" 
+                              size="small"
+                              class="inline-flex items-center justify-center"
+                              @click="editField(element)"
+                            ></v-btn>
+                            <v-btn
+                              icon="mdi-trash-can-outline" 
+                              size="small"
+                              class="inline-flex items-center justify-center"
+                              @click="removeField(element.id)"
+                            ></v-btn>
+                          </div>
+                        </div>
+                      </template>
+                    </draggable>
+                  </v-card-text>
+                </Card>
+              </v-col>
+              <v-col cols="5">
+                <Card title="Preview" class="h-100">
+                  <v-card-text>
+                    <div v-for="field in formFields" :key="field.id">
+                      <div class="font-weight-bold mb-1">{{field.label}}</div>
+                      <v-text-field
+                        v-if="field.type == 'text'"
+                        hide-details
+                        variant="solo"
+                        density="compact"
+                        class="text-field-component"
+                        :placeholder="field.placeholder || 'text input'"
+                      />
+                      <v-text-field
+                        v-if="field.type == 'email'"
+                        hide-details
+                        variant="solo"
+                        :placeholder="field.placeholder || 'example@gmail.com'"
+                        density="compact"
+                        class="text-field-component"
+                      >
+                        <template #prepend-inner>
+                          <i class="ph-envelope pe-3" />
+                        </template>
+                      </v-text-field>
+                      <v-textarea
+                        v-if="field.type == 'textarea'"
+                        hide-details
+                        variant="solo"
+                        density="compact"
+                        :placeholder="field.placeholder || 'textarea'"
+                        class="text-field-component"
+                      />
+                      <VueDatePicker
+                        v-if="field.type == 'datetime'"
+                        v-model="defaultModel"
+                        :teleport="true"
+                        placeholder="Select date"
+                      />
+                      <ImageUploader v-if="field.type == 'file'"/>
+                      <v-rating
+                        v-if="field.type == 'rating'"
+                        density="comfortable"
+                        clearable
+                        :model-value="3"
+                        active-color="warning"
+                      />
+                      <v-select
+                        v-if="field.type == 'select'"
+                        :label="field.placeholder"
+                        variant="outlined"
+                        :items="field.options"
+                        density="compact"
+                        class="mt-2"
+                      />
+                      <v-checkbox
+                        v-if="field.type == 'checkbox'"
+                        :model-value="true"
+                        color="primary"
+                        hide-details
+                        density="compact"
+                      >
+                        <template #label><span>{{ field.placeholder || 'checkbox' }}</span></template>
+                      </v-checkbox>
+                      <v-radio-group v-if="field.type == 'radio'" :model-value="field.radios[0]" color="primary">
+                        <v-radio 
+                          v-for="radio in field.radios" 
+                          density="compact" 
+                          :value="radio"
+                        >
+                          <template #label><span>{{ radio }}</span></template>
+                        </v-radio>
+                      </v-radio-group>
+                      <v-list v-if="field.type == 'list'" :items="field.items"></v-list>
+                      <GoogleMap
+                        v-if="field.type == 'google-map'"
+                        :api-key="apiKey"
+                        style="width: 100%; height: 300px"
+                        :center="center"
+                        :zoom="13"
+                      >
+                      </GoogleMap>
+                      <p class="text-muted my-1 ml-1">{{field.description}}</p>
+                    </div>
+                  </v-card-text>
+                </Card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </Card>
+      </v-col>
+    </v-row>
     <!-- Edit Modal -->
-    <EditFieldModal :show="showModal" :field="editingField" @update="saveEdit" @close="closeEdit" />
-  </div>
+     <v-dialog v-model="showModal" class="w-50">
+       <EditFieldModal :field="editingField" @update="saveEdit" @close="closeEdit" />
+    </v-dialog>
 </template>
