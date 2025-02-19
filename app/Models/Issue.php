@@ -11,7 +11,8 @@ class Issue extends Model
     protected $fillable = [
         'name',
         'status',
-        'category_id'
+        'category_id',
+        'order'
     ];
 
     public function category(): BelongsTo {

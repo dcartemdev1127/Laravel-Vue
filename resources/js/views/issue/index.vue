@@ -31,42 +31,42 @@ onMounted(async () => {
 </script>
 
 <template>
-    <v-row justify="end" class="mt-5">
+    <v-row justify="space-between" class="mt-5">
+        <v-btn
+            class="ml-5"
+            color="primary"
+            @click="router.push({path: '/category', query: {id: category_id, workspace_id: workspace_id}})"
+        >
+            BACK
+        </v-btn>
         <v-btn
             class="mr-5"
-            color="blue"
+            color="primary"
             @click="handleSave()"
         >
             SAVE
         </v-btn>
     </v-row>
     <v-row>
-        <v-col cols="12">
-            <div class="font-weight-medium mt-5">
-                Name <i class="ph-asterisk ph-xs text-danger" />
-            </div>
-        </v-col>
-        <v-col cols="12">
-            <v-text-field
-                v-model="name"
-                isRequired
-                placeholder="Enter issue name"
-                hideDetails
-            ></v-text-field>
-        </v-col>
-        <v-col cols="12">
-            <div class="font-weight-medium mt-5">
-                Status <i class="ph-asterisk ph-xs text-danger" />
-            </div>
-        </v-col>
-        <v-col cols="12">
-            <v-switch
-                v-model="status"
-                color="primary"
-                :label="status ? 'Enable' : 'Disable'"
-                hide-details
-                >
-            </v-switch>
+        <v-col cols="12" lg="6">
+            <Card title="Edit Issue" class="h-100">
+                <v-card-text>
+                    <div class="font-weight-bold mb-2 mt-3">Name <i class="ph-asterisk ph-xs text-danger" /></div>
+                    <TextField
+                        v-model="name"
+                        hide-details
+                        placeholder="Enter issue name"
+                    />
+                    <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
+                    <v-switch
+                        v-model="status"
+                        color="primary"
+                        :label="status ? 'Enable' : 'Disable'"
+                        hide-details
+                        >
+                    </v-switch>
+                </v-card-text>
+            </Card>
         </v-col>
     </v-row>
 </template>
