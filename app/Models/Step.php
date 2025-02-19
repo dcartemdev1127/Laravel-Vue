@@ -12,7 +12,12 @@ class Step extends Model
         'name',
         'status',
         'order',
-        'form_id'
+        'form_id',
+        'fields'
+    ];
+
+    protected $casts = [
+        'fields' => 'array'
     ];
 
     public function form(): BelongsTo {
