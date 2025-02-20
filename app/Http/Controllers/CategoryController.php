@@ -39,4 +39,17 @@ class CategoryController extends Controller
         $result = Category::where('workspace_id', $id)->get();
         return response()->json($result, 200);
     }
+
+    public function allWithIssues(Request $request) {
+        $result = Category::with(['issues' => function($query) {
+            $query->where('status', 1)->orderBy('order');
+        }])->where('status', 1)->orderBy('order')->get();
+        $data = [];
+        foreach($result as $item) {
+            foreach($item->issues as $subitem) {
+                $data[] = ['id'=>$subitem->id, 'title'=>$item->name.' - '.$subitem->name];
+            }
+        }
+        return response()->json($data, 200);
+    }
 }

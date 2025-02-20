@@ -647,3 +647,8 @@ code {
   justify-content: center;
   align-items: center;
 }
+.v-label--clickable {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}

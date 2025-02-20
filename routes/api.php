@@ -17,12 +17,13 @@ Route::group(['middleware' => 'api'], function($router) {
 });
 
 Route::prefix('category')->group(function() {
+    Route::get('/withIssues', [CategoryController::class, 'allWithIssues']);
     Route::get('/', [CategoryController::class, 'index']);
-    Route::get('/{id}', [CategoryController::class, 'get']);
     Route::post('/', [CategoryController::class, 'create']);
     Route::post('/{id}', [CategoryController::class, 'update']);
     Route::delete('/{id}', [CategoryController::class, 'delete']);
     Route::get('/workspace/{id}', [CategoryController::class, 'getByWorkspace']);
+    Route::get('/{id}', [CategoryController::class, 'get']);
 });
 
 Route::prefix('department')->group(function() {
