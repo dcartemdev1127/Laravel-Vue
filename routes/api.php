@@ -6,6 +6,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\StepController;
+use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,7 @@ Route::prefix('department')->group(function() {
     Route::get('/', [DepartmentController::class, 'index']);
     Route::get('/{id}', [DepartmentController::class, 'get']);
     Route::post('/', [DepartmentController::class, 'create']);
+    Route::post('/{id}', [DepartmentController::class, 'update']);
     Route::delete('/{id}', [DepartmentController::class, 'delete']);
 });
 
@@ -67,3 +69,5 @@ Route::prefix('step')->group(function() {
     Route::post('/{id}', [StepController::class, 'update']);
     Route::delete('/{id}', [StepController::class, 'delete']);
 });
+
+Route::post('/upload-image', [UploadController::class, 'index']);
