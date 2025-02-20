@@ -26,4 +26,9 @@ class DepartmentController extends Controller
         $department = Department::find($id);
         return response()->json($department, 200);
     }
+
+    public function update(Request $request, $id) {
+        $result = Department::find($id)->update($request->all());
+        return response()->json($result, 200);
+    }
 }

@@ -14,7 +14,12 @@ class Category extends Model
         'name',
         'status',
         'workspace_id',
-        'order'
+        'order',
+        'departments'
+    ];
+
+    protected $casts = [
+        'departments' => 'array'
     ];
 
     public function workspace(): BelongsTo {
