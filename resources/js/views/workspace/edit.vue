@@ -94,15 +94,21 @@ onMounted(async () => {
                         hide-details
                         placeholder="Enter workspace name"
                     />
-                    <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
-                    <v-switch
-                        v-model="status"
-                        color="primary"
-                        :label="status ? 'Enable' : 'Disable'"
-                        hide-details
-                        >
-                    </v-switch>
-                    
+                    <v-row class="mt-1">
+                        <v-col cols="2">
+                            <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
+                        </v-col>
+                        <v-col cols='10'>
+                            <v-switch
+                                v-model="status"
+                                color="primary"
+                                density="compact"
+                                :label="status ? 'Enable' : 'Disable'"
+                                hide-details
+                                >
+                            </v-switch>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
             </Card>
         </v-col>
@@ -122,12 +128,25 @@ onMounted(async () => {
                         <v-list>
                             <draggable v-model="categories" tag="div" item-key="id" handle=".drag-handle" animation="300">
                                 <template #item="{ element }">
-                                <v-list-item>
+                                <v-list-item class="border rounded-lg mb-2" >
                                     <template v-slot:prepend>
                                     <v-icon class="drag-handle" style="cursor: grab;">mdi-drag</v-icon>
                                     </template>
                                     <v-list-item-content>
-                                    <v-list-item-title>{{ element.name }}</v-list-item-title>
+                                    <v-list-item-title>
+                                        <div class="d-flex justify-space-between">
+                                            <div class="d-flex">{{ element.name }}</div>
+                                            <div class="mr-5">
+                                                <v-chip
+                                                    size="x-small"
+                                                    :color="element.status ? 'success' : 'danger'"
+                                                    variant="outlined"
+                                                >
+                                                    {{ element.status ? 'Enable' : 'Disable' }}
+                                                </v-chip>
+                                            </div>
+                                        </div>
+                                    </v-list-item-title>
                                     </v-list-item-content>
                                     <template v-slot:append>
                                         <div>
@@ -174,15 +193,21 @@ onMounted(async () => {
                     hide-details
                     placeholder="Enter category name"
                 />
-                <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
-                <v-switch
-                    v-model="cat_status"
-                    color="primary"
-                    :label="status ? 'Enable' : 'Disable'"
-                    hide-details
-                    >
-                </v-switch>
-                
+                <v-row class="mt-1">
+                    <v-col cols="2">
+                        <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
+                    </v-col>
+                    <v-col cols="10">
+                        <v-switch
+                            v-model="cat_status"
+                            color="primary"
+                            density="compact"
+                            :label="status ? 'Enable' : 'Disable'"
+                            hide-details
+                            >
+                        </v-switch>
+                    </v-col>
+                </v-row>
             </v-card-text>
             <v-divider>
             </v-divider>

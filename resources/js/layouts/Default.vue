@@ -22,6 +22,7 @@ const isHorizontal = computed(() => {
       <TopBar />
       <v-main app>
         <v-container
+          data-simplebar
           :class="!isHorizontal ? 'pt-0' : ''"
           :fluid="!isHorizontal"
           class="main-container"

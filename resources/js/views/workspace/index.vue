@@ -76,6 +76,7 @@ onMounted(async () => {
                     :headers="headers"
                     :items="workspaces"
                     style="border-radius: 12px;"
+                    class="customTable"
                     :loading="loadingTable"
                 >
                     <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
@@ -91,7 +92,15 @@ onMounted(async () => {
                     <template v-slot:item="{ item }">
                         <tr>
                             <td>{{ item.name }}</td>
-                            <td>{{ item.status ? 'Enable' : 'Disable' }}</td>
+                            <td>
+                                <v-chip
+                                    size="x-small"
+                                    :color="item.status ? 'success' : 'danger'"
+                                    variant="outlined"
+                                >
+                                    {{ item.status ? 'Enable' : 'Disable' }}
+                                </v-chip>
+                            </td>
                             <td>
                                 <v-btn 
                                     icon="mdi-pencil-outline" 
@@ -135,14 +144,21 @@ onMounted(async () => {
                     hide-details
                     placeholder="Enter workspace name"
                 />
-                <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
-                <v-switch
-                    v-model="status"
-                    color="primary"
-                    :label="status ? 'Enable' : 'Disable'"
-                    hide-details
-                    >
-                </v-switch>
+                <v-row>
+                    <v-col cols="2">
+                        <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
+                    </v-col>
+                    <v-col cols="10">
+                        <v-switch
+                            v-model="status"
+                            color="primary"
+                            density="compact"
+                            :label="status ? 'Enable' : 'Disable'"
+                            hide-details
+                            >
+                        </v-switch>
+                    </v-col>
+                </v-row>
             </v-card-text>
             <v-divider>
             </v-divider>
@@ -164,3 +180,10 @@ onMounted(async () => {
         </v-card>
     </v-dialog>
 </template>
+
+<style>
+.customTable th:last-child, td:last-child{
+    text-align: center !important;
+    width: 150px;
+}
+</style>

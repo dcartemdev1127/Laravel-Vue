@@ -57,14 +57,21 @@ onMounted(async () => {
                         hide-details
                         placeholder="Enter issue name"
                     />
-                    <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
-                    <v-switch
-                        v-model="status"
-                        color="primary"
-                        :label="status ? 'Enable' : 'Disable'"
-                        hide-details
-                        >
-                    </v-switch>
+                    <v-row class="mt-1">
+                        <v-col cols="2">
+                            <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
+                        </v-col>
+                        <v-col cols="10">
+                            <v-switch
+                                v-model="status"
+                                color="primary"
+                                density="compact"
+                                :label="status ? 'Enable' : 'Disable'"
+                                hide-details
+                                >
+                            </v-switch>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
             </Card>
         </v-col>

@@ -166,15 +166,21 @@ const addListItem = (field: FormField) => {
               hide-details
               placeholder="Enter step name"
             />
-            <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
-            <v-switch
-              v-model="status"
-              density="compact"
-              color="primary"
-              :label="status ? 'Enable' : 'Disable'"
-              hide-details
-            >
-            </v-switch>
+            <v-row class="mt-1">
+              <v-col cols="2">
+                <div class="font-weight-bold mb-2 mt-3">Status <i class="ph-asterisk ph-xs text-danger" /></div>
+              </v-col>
+              <v-col cols="10">
+                <v-switch
+                  v-model="status"
+                  density="compact"
+                  color="primary"
+                  :label="status ? 'Enable' : 'Disable'"
+                  hide-details
+                >
+                </v-switch>
+              </v-col>
+            </v-row>
           </v-card-text>
         </Card>
       </v-col>
@@ -185,7 +191,7 @@ const addListItem = (field: FormField) => {
         <Card title="Edit field" class="h-100">
           <v-card-text>
             <v-row>
-              <v-col cols="3">
+              <v-col cols="12" lg="3" md="5">
                 <Card title="Components" class="h-100">
                   <v-card-text>
                     <div class="flex flex-col items-start gap-3">
@@ -206,7 +212,7 @@ const addListItem = (field: FormField) => {
                   </v-card-text>
                 </Card>
               </v-col>
-              <v-col cols="4">
+              <v-col cols="12" lg="4" md="7">
                 <Card title="Fields" class="h-100">
                   <v-card-text>
                     <draggable 
@@ -240,7 +246,7 @@ const addListItem = (field: FormField) => {
                   </v-card-text>
                 </Card>
               </v-col>
-              <v-col cols="5">
+              <v-col cols="12" lg="5">
                 <Card title="Preview" class="h-100">
                   <v-card-text>
                     <div v-for="field in formFields" :key="field.id">

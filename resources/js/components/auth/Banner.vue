@@ -13,7 +13,7 @@ import back from '@/assets/images/background.png';
  
     <img 
       :src=back
-      style="object-fit: cover; height: 100%"
+      style="object-fit: cover; height: 100%; width: 100%;"
     />
   </v-card>
 </template>

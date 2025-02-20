@@ -29,10 +29,6 @@ import { Avatar1 } from '@/assets/images/users/utils';
         <i class="mdi mdi-account-circle text-muted" />
         Profile
       </v-list-item>
-      <v-list-item class="dropdown-item" @click="">
-        <i class="mdi mdi-message-text-outline text-muted" />
-        Messages
-      </v-list-item>
       
       <v-list-item class="dropdown-item" @click="" to="/logout">
         <i class="mdi mdi-logout text-muted" />

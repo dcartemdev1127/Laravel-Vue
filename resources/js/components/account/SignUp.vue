@@ -177,32 +177,9 @@ onMounted(async () => {
             <v-btn color="primary" block @click="onSignUp"> Sign Up </v-btn>
             <div class="d-flex align-center mt-8">
               <v-divider class="border-dashed" />
-              <div class="w-100 text-center font-weight-bold text-muted">
-                Create account with
-              </div>
               <v-divider class="border-dashed" />
             </div>
 
-            <div class="text-center mt-4">
-              <v-hover
-                v-for="(item, index) in socialMedias"
-                :key="'social-media-' + index"
-              >
-                <template v-slot:default="{ isHovering, props }">
-                  <v-btn
-                    v-bind="props"
-                    :color="item.color"
-                    density="comfortable"
-                    icon
-                    :variant="!isHovering ? 'tonal' : 'elevated'"
-                    rounded
-                    class="ma-1"
-                  >
-                    <i :class="item.icon" />
-                  </v-btn>
-                </template>
-              </v-hover>
-            </div>
             <div class="text-center mt-5 d-flex align-center justify-center">
               Already have an account ?
               <v-btn
