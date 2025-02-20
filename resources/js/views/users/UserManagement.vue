@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import axios from "@/app/http/axios";
 import { cities, roles } from '@/app/const';
 import { useToast } from 'vue-toast-notification';
+import Swal from 'sweetalert2';
 
 const toast = useToast();
 const isShow = ref(false);
@@ -36,11 +37,23 @@ const handleUpdate = async (id: string) => {
 };
 
 const handleDelete = async (id: string) => {
-    const response = await axios.delete(`/api/users/${id}`);
-    if(response) {
-        users.value.filter(item => item.id != id);
-        toast.success('User delete successfully.', {position: 'top-right'});
-    }
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const response = await axios.delete(`/api/users/${id}`);
+            if(response) {
+                users.value.filter(item => item.id != id);
+            }
+            Swal.fire("Deleted!", "User delete successfully.", "success");
+        }
+    });
 };
 
 const updateUser = async () => {
@@ -54,12 +67,7 @@ const updateUser = async () => {
     if(response) {
         isShow.value = false;
         toast.success('User update successfully.', {position: 'top-right'});
-        // users.value.map(item => item.id == selectId.value ? response.data : item);
-        users.value.map(item => {
-            if(item.id == selectId.value) {
-                users.value[item.id] = response.data;
-            }
-        })
+        users.value = users.value.map(item => item.id == selectId.value ? {...item, ...data} : item);
     }
 }
 
@@ -79,12 +87,13 @@ onMounted(async () => {
 
 <template>
     <v-row justify="space-around" class="mt-5">
-        <v-col cols="10">
+        <v-col cols="12">
             <v-data-table
                 :headers="headers"
                 :items="users"
                 style="border-radius: 12px;"
                 :loading="loadingTable"
+                class="customTable"
             >
                 <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
                     <tr>
@@ -114,64 +123,48 @@ onMounted(async () => {
         </v-col>
     </v-row>
     <v-dialog
-        class="w-75"
+        class="w-50"
         v-model="isShow"
     >
-        <v-card>
+        <Card>
             <v-card-title class="text-center">
                 <h5 class="text-h6 font-weight-bold">Update User Information</h5>
             </v-card-title>
             <v-card-text class="mt-5">
-                <v-row justify="center" class="align-center">
-                    <v-col cols="12" lg="8">
-                        <div class="font-weight-medium mb-2 mt-5">
-                        Username <i class="ph-asterisk ph-xs text-danger" />
-                        </div>
-                        <v-text-field
-                        v-model="username"
-                        isRequired
-                        placeholder="Enter username"
-                        hide-details
-                        />
-                        <div class="font-weight-medium mb-2 mt-5">
-                        Role <i class="ph-asterisk ph-xs text-danger" />
-                        </div>
-                        <v-select
-                        label="Select your role"
-                        variant="outlined"
-                        :items="roles"
-                        density="compact"
-                        class="mt-2"
-                        isReuired
-                        v-model="role"
-                        />
-                        <div class="font-weight-medium mb-2 mt-5">
-                        City <i class="ph-asterisk ph-xs text-danger" />
-                        </div>
-                        <v-select
-                        label="Select your city"
-                        variant="outlined"
-                        :items="cities"
-                        density="compact"
-                        class="mt-2"
-                        isReuired
-                        v-model="city"
-                        />
-                        <div class="font-weight-medium mb-2 mt-5">
-                        Department <i class="ph-asterisk ph-xs text-danger" />
-                        </div>
-                        <v-select
-                        label="Select your department"
-                        variant="outlined"
-                        :items="departments"
-                        item-title="name"
-                        item-value="id"
-                        density="compact"
-                        class="mt-2"
-                        v-model="department"
-                        />
-                    </v-col>
-                </v-row>
+                <div class="font-weight-bold mb-2 mt-3">Username</div>
+                <TextField
+                    v-model="username"
+                    hide-details
+                    placeholder="Enter department name"
+                />
+                <div class="font-weight-bold mb-2 mt-3">Role</div>
+                <v-select
+                    label="Select your role"
+                    variant="outlined"
+                    :items="roles"
+                    density="compact"
+                    isReuired
+                    v-model="role"
+                />
+                <div class="font-weight-bold mb-2 mt-3">City</div>
+                <v-select
+                    label="Select your city"
+                    variant="outlined"
+                    :items="cities"
+                    density="compact"
+                    isReuired
+                    v-model="city"
+                />
+                <div class="font-weight-bold mb-2 mt-3">Department</div>
+                <v-select
+                    label="Select your department"
+                    variant="outlined"
+                    :items="departments"
+                    item-title="name"
+                    item-value="id"
+                    density="compact"
+                    v-model="department"
+                />
             </v-card-text>
             <v-divider>
             </v-divider>
@@ -190,6 +183,12 @@ onMounted(async () => {
                     @click="updateUser()"
                 ></v-btn>
             </v-card-actions>
-        </v-card>
+        </Card>
     </v-dialog>
 </template>
+<style>
+.customTable th:last-child, td:last-child {
+    text-align: center !important;
+    width: 150px;
+}
+</style>
