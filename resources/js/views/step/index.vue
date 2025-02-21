@@ -1,16 +1,48 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick, watchEffect } from 'vue';
 import axios from "@/app/http/axios";
 import { useRouter, useRoute } from 'vue-router';
 import {useToast} from 'vue-toast-notification';
-import draggable from "vuedraggable";
 import EditFieldModal from "./EditFieldModal.vue";
+import draggable from "vuedraggable";
 import ImageUploader from "@/app/common/components/ImageUploader.vue";
-import { GoogleMap } from 'vue3-google-map'
-import appConfigs from "@/app/appConfigurations";
+import IssueList from './IssueList.vue';
+import Map from './Map.vue';
 
-const apiKey = appConfigs.googleMapAPIKey
-const center = { lat: 42.3455, lng: -71.0983 }
+import { GoogleMap,Marker, MarkerCluster } from "vue3-google-map";
+const apiKey = "AIzaSyANKjpCtaUho8oy53T63IFl75Ia9qrdDlI";
+// const mapCenter = ref({ lat: 34.1706, lng: -118.8376 }); // Default: Thousand Oaks
+// const zoomLevel = ref(12);
+// const areaName = ref("");
+// const center = { lat: 40.689247, lng: -74.044502 }
+// const markerOptions = { position: center, label: 'L', title: 'LADY LIBERTY' }
+// interface LatLng {
+//   lat: number;
+//   lng: number;
+// }
+
+// const mapRef = ref<InstanceType<typeof GoogleMap> | null>(null);
+// const mapInstance = ref<google.maps.Map | null>(null);
+// const mapCenter = ref<LatLng>({ lat: 34.1706, lng: -118.8376 }); 
+
+// const onMapLoad = (map: google.maps.Map) => {
+//   mapInstance.value = map;
+//   console.log("Map Loaded:", mapInstance.value);
+// };
+
+// const updateMapCenter = () => {
+//   if (!mapInstance.value) {
+//     console.warn("Map is not ready yet!");
+//     return;
+//   }
+
+//   const center = mapInstance.value.getCenter();
+//   if (center) {
+//     mapCenter.value = { lat: center.lat(), lng: center.lng() };
+//     console.log("Updated Center:", mapCenter.value);
+//   }
+// };
+
 const toast = useToast();
 const router = useRouter();
 const route = useRoute();
@@ -29,6 +61,7 @@ const handleSave = async () => {
 }
 
 onMounted(async () => {
+  // await nextTick();
   const response = await axios.get(`/api/step/${step_id}`);
   if(response) {
       name.value = response.data.name;
@@ -65,6 +98,7 @@ const components = ref<FormField[]>([
   { id: 9, type: "checkbox", label: "Checkbox", name: "checkbox_1" },
   { id: 10, type: "rating", label: "Rating", name: "rating_1", value: 0 },
   { id: 11, type: "radio", label: "Radio", name: "radio_1", radios: ['Radio 1', 'Radio 2'] },
+  { id: 11, type: "issues", label: "Issue List", name: "issues" },
 ]);
 
 const formFields = ref<FormField[]>([]);
@@ -110,31 +144,24 @@ const addListItem = (field: FormField) => {
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
+.dialog-card {
+  overflow: hidden;
+  max-height: 90vh; 
 }
-.left-panel, .center-panel, .right-panel {
-  width: 30%;
+.custom-scroll {
+  max-height: 80vh; 
+  overflow: auto; 
+}
+.info-box {
+  margin-top: 10px;
   padding: 10px;
-  border: 1px solid #ccc;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
 }
-.draggable-list {
-  min-height: 200px;
-  padding: 10px;
-  border: 2px dashed #ddd;
-}
-.form-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px;
-  background: #f9f9f9;
-  margin: 5px 0;
-  cursor: grab;
-}
-.preview-item {
-  padding: 5px;
+
+.info-box p {
   margin: 5px 0;
 }
 </style>
@@ -191,7 +218,7 @@ const addListItem = (field: FormField) => {
         <Card title="Edit field" class="h-100">
           <v-card-text>
             <v-row>
-              <v-col cols="12" lg="3" md="5">
+              <v-col cols="12" lg="2" md="5">
                 <Card title="Components" class="h-100">
                   <v-card-text>
                     <div class="flex flex-col items-start gap-3">
@@ -246,7 +273,7 @@ const addListItem = (field: FormField) => {
                   </v-card-text>
                 </Card>
               </v-col>
-              <v-col cols="12" lg="5">
+              <v-col cols="12" lg="6">
                 <Card title="Preview" class="h-100">
                   <v-card-text>
                     <div v-for="field in formFields" :key="field.id">
@@ -310,7 +337,11 @@ const addListItem = (field: FormField) => {
                       >
                         <template #label><span>{{ field.placeholder || 'checkbox' }}</span></template>
                       </v-checkbox>
-                      <v-radio-group v-if="field.type == 'radio'" :model-value="field.radios[0]" color="primary">
+                      <v-radio-group 
+                        v-if="field.type == 'radio'" 
+                        :model-value="field.radios[0]" 
+                        color="primary"
+                      >
                         <v-radio 
                           v-for="radio in field.radios" 
                           density="compact" 
@@ -320,14 +351,31 @@ const addListItem = (field: FormField) => {
                         </v-radio>
                       </v-radio-group>
                       <v-list v-if="field.type == 'list'" :items="field.items"></v-list>
-                      <GoogleMap
+                      <IssueList v-if="field.type == 'issues'"/>
+                      <!-- <GoogleMap
+                          :api-key="apiKey"
+                          style="width: 100%; height: 500px"
+                          :center="center"
+                          :zoom="15"
+                        >
+                          <Marker :options="markerOptions" />
+                        </GoogleMap> -->
+                        <!-- <GoogleMap
                         v-if="field.type == 'google-map'"
-                        :api-key="apiKey"
-                        style="width: 100%; height: 300px"
-                        :center="center"
-                        :zoom="13"
-                      >
-                      </GoogleMap>
+                          ref="mapRef"
+                          :api-key="apiKey"
+                          :center="mapCenter"
+                          :zoom="zoomLevel"
+                          style="width: 100%; height: 500px"
+                          @idle="updateMapCenter"
+                           @on-load="onMapLoad"
+                        />
+                        <div class="info-box">
+                          <p><strong>Latitude:</strong> {{ mapCenter.lat }}</p>
+                          <p><strong>Longitude:</strong> {{ mapCenter.lng }}</p>
+                          <p><strong>Area:</strong> {{ areaName || "Loading..." }}</p>
+                        </div> -->
+                        <!-- <Map v-if="field.type == 'google-map'" /> -->
                       <p class="text-muted my-1 ml-1">{{field.description}}</p>
                     </div>
                   </v-card-text>
@@ -339,7 +387,14 @@ const addListItem = (field: FormField) => {
       </v-col>
     </v-row>
     <!-- Edit Modal -->
-     <v-dialog v-model="showModal" class="w-50">
-       <EditFieldModal :field="editingField" @update="saveEdit" @close="closeEdit" />
+     <v-dialog v-model="showModal" class="w-50" max-height="80vh" @click:outside="closeEdit">
+      <v-card class="dialog-card">
+        <div data-simplebar class="custom-scroll px-3">
+          <EditFieldModal 
+           :field="editingField" 
+           @update="saveEdit" 
+           @close="closeEdit" />
+        </div>
+      </v-card>
     </v-dialog>
 </template>
