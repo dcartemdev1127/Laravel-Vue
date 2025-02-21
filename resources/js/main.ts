@@ -34,7 +34,6 @@ import TextArea from "./app/common/validationComponents/TextArea.vue";
 
 const app: App = createApp(AppMain);
 registerPlugins(app);
-
 app.use(i18n);
 app.use(VueApexCharts);
 app.use(ToastPlugin, {

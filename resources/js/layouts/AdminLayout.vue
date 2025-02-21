@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import LeftSideBar from "@/components/layouts/leftSideBar/index.vue";
 import TopBar from "@/components/layouts/topBar/index.vue";
 import { useLayoutStore } from "@/store/app";
 import { computed } from "vue";
@@ -15,6 +16,7 @@ const isHorizontal = computed(() => {
       class="main-layout-wrapper justify-center position-relative"
       id="layout-wrapper"
     >
+      <LeftSideBar />
       <TopBar />
       <v-main app>
         <v-container

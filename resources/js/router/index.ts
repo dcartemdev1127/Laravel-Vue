@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { routes } from "@/router/routes";
-import appConfigs from "@/app/appConfigurations";
-import { fakeBackendService } from "@/app/http/httpServiceProvider";
 import { useRouter } from "vue-router";
 
 const router = createRouter({
@@ -9,10 +7,9 @@ const router = createRouter({
   routes,
 });
 
-const title = "Steex Vuetify - Admin & Dashboard Template";
+const title = "Issue Report";
 
 router.beforeEach((to, from, next) => {
-  const auth = appConfigs.auth;
   const router = useRouter();
 
   const nearestWithTitle = to.matched
@@ -29,18 +26,15 @@ router.beforeEach((to, from, next) => {
   if (!isAuthRequired) {
     return next();
   }
-  if (auth === "fakebackend") {
-    const user = fakeBackendService.getUser();
-    const isUserLoggedIn = Object.keys(user).length > 0;
+  else {
+    const token = localStorage.getItem('jwtToken');
 
-    if (isAuthRequired && isUserLoggedIn) {
+    if (isAuthRequired && token) {
       next();
     } else {
       router.push("/signin");
     }
-  } else {
-    next();
-  }
+  } 
 });
 
 export default router;
