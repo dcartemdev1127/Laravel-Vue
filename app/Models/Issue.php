@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Category;
+use App\Models\Report;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Issue extends Model
 {
@@ -17,5 +19,9 @@ class Issue extends Model
 
     public function category(): BelongsTo {
         return $this->belongsTo(Category::class);
+    }
+
+    public function reports(): HasMany {
+        return $this->hasMany(Report::class);
     }
 }

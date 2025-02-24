@@ -22,6 +22,13 @@ class FormController extends Controller
         return response()->json($result, 200);
     }
 
+    public function getActive(Request $request, $id) {
+        $result = Form::with(['steps' => function ($query) {
+            $query->where('status', true)->orderBy('order');
+        }])->find($id);
+        return response()->json($result, 200);
+    } 
+
     public function update(Request $request, $id) {
         $result = Form::find($id)->update($request->all());
         return response()->json($result, 200);

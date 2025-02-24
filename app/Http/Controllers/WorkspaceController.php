@@ -18,6 +18,11 @@ class WorkspaceController extends Controller
         return response()->json($result, 200);
     }
 
+    public function getMeta(Request $request, $id) {
+        $result = Workspace::find($id);
+        return response()->json($result, 200);
+    }
+
     public function create(Request $request) {
         $result = Workspace::create($request->all());
         return response()->json($result, 200);

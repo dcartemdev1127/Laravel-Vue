@@ -11,7 +11,10 @@ class Workspace extends Model
     protected $fillable = [
         'name',
         'status',
-        'form_id'
+        'form_id',
+        'place_name',
+        'place_address',
+        'location'
     ];
 
     public function categories(): HasMany {

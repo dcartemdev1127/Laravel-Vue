@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { v4 as uuidv4 } from "uuid";
 import { ImageUploaderType } from "@/app/common/types/imageUploader";
+import axios from "@/app/http/axios";
 
 const emit = defineEmits(["update:modelValue"]);
 
@@ -25,55 +25,78 @@ const prop = defineProps({
 const files = computed({
   get() {
     const existingFiles: ImageUploaderType[] = prop.modelValue.map(
-      (data: any, index) => {
-        return {
-          ...data,
-          src: data && data.src ? data.src : data,
-          name: (data && data.name) || `uploaded-img-` + index + ".png",
-          size: (data && data.size) || 1024,
-          id: (data && data.id) || uuidv4(),
-        };
-      }
+      (data: any, index) => ({
+        ...data,
+        src: data?.src ?? data,
+        name: data?.name ?? `uploaded-img-${index}.png`,
+        size: data?.size ?? 1024,
+        id: data?.id ?? uuidv4(),
+        path: data?.path,
+      })
     );
     uploaderItem.value = existingFiles;
     return existingFiles;
   },
-  set(value: any) {
-    const data = value.map((file: any) => {
-      if (!file.id) {
-        return {
-          src: URL.createObjectURL(file),
-          name: file.name,
-          size: file.size,
-          id: uuidv4(),
-        };
-      }
+  async set(value: any) {
+    const processedFiles = await Promise.all(
+      value.map(async (file: any) => {
+        if (!file.id) {
+          const formData = new FormData();
+          formData.append("image", file);
 
-      return file;
-    });
-    if (prop.multiple) {
-      uploaderItem.value = [...uploaderItem.value, ...data];
-    } else {
-      uploaderItem.value = data;
-    }
-    emit(
-      "update:modelValue",
-      uploaderItem.value.map((item: any) => {
-        return item;
+          try {
+            const response = await axios.post("/api/upload-image", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            if (response?.data?.url) {
+              return {
+                src: URL.createObjectURL(file),
+                name: file.name,
+                size: file.size,
+                id: uuidv4(),
+                path: response.data.url,
+              };
+            }
+          } catch (error) {
+            console.error("Upload failed:", error);
+          }
+        }
+        return file;
       })
     );
+
+    // Update the uploaderItem correctly
+    if (prop.multiple) {
+      uploaderItem.value = [...uploaderItem.value, ...processedFiles];
+    } else {
+      uploaderItem.value = processedFiles;
+    }
+
+    // Emit the updated model value
+    emit("update:modelValue", uploaderItem.value);
   },
 });
 
-const onRemove = (item: any) => {
-  uploaderItem.value = uploaderItem.value.filter(
-    (uploaded: any) => uploaded.id !== item.id
-  );
+// Watch `modelValue` to keep `uploaderItem` in sync
+watch(
+  () => prop.modelValue,
+  (newValue) => {
+    uploaderItem.value = newValue.map((data: any, index) => ({
+      ...data,
+      src: data?.src ?? data,
+      name: data?.name ?? `uploaded-img-${index}.png`,
+      size: data?.size ?? 1024,
+      id: data?.id ?? uuidv4(),
+      path: data?.path,
+    }));
+  },
+  { deep: true, immediate: true }
+);
 
-  emit(
-    "update:modelValue",
-    uploaderItem.value.map((item: any) => item)
-  );
+const onRemove = (item: any) => {
+  uploaderItem.value = uploaderItem.value.filter((uploaded) => uploaded.id !== item.id);
+  emit("update:modelValue", uploaderItem.value);
 };
 </script>
 <template>
