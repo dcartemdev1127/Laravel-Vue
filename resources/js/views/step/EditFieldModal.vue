@@ -3,7 +3,7 @@
     <v-col cols="12">
       <Card>
         <v-card-title class="text-center">
-          <h5>Edit {{ field?.label }} Field</h5>
+          <h5 class="text-h6 font-weight-bold">Edit {{ field?.label }} Field</h5>
         </v-card-title>
         <v-card-text>
           <div class="font-weight-bold mb-2 mt-3">Label <i class="ph-asterisk ph-xs text-danger" /></div>
@@ -30,7 +30,20 @@
             hide-details
             placeholder="Enter field name"
           />
-          <div v-if="localField.type == 'select'">
+          <div v-if="field.type == 'File Uploader'">
+            <div class="font-weight-bold mb-2 mt-3">Type <i class="ph-asterisk ph-xs text-danger" /></div>
+            <div class="upload-type">
+              <div class="upload-type-item">
+                <input type="radio" id="single" v-model="localField.singleFile" :value="false" />
+                <label for="single">Single File</label>
+              </div>
+              <div class="upload-type-item">
+                <input type="radio" id="multiple" v-model="localField.singleFile" :value="true"/>
+                <label for="multiple">Multiple File</label>
+              </div>
+            </div>
+          </div>
+          <div v-if="localField.type == 'Select'">
             <div class="font-weight-bold mb-2 mt-3">Options <i class="ph-asterisk ph-xs text-danger" /></div>
             <div v-for="(option, index) in localField.options" class="listItem" :key="index">
               <TextField
@@ -51,7 +64,7 @@
               </v-btn>
             </div>
           </div>
-          <div v-if="localField.type == 'list'">
+          <div v-if="localField.type == 'List'">
             <div class="font-weight-bold mb-2 mt-3">Lists <i class="ph-asterisk ph-xs text-danger" /></div>
             <div v-for="(item, index) in localField.items" class="listItem" :key="index">
               <TextField
@@ -72,13 +85,20 @@
               </v-btn>
             </div>
           </div>
-          <div v-if="localField.type == 'radio'">
+          <div v-if="localField.type == 'Custom Radio'">
             <div class="font-weight-bold mb-2 mt-3">Radios <i class="ph-asterisk ph-xs text-danger" /></div>
             <div v-for="(option, index) in localField.radios" class="listItem" :key="index">
               <TextField
-                v-model="localField.radios[index]"
+                v-model="localField.radios[index].title"
                 hide-details
-                placeholder="Enter option name"
+                placeholder="Enter option title"
+                class="mb-1"
+              />
+              <TextField
+                v-model="localField.radios[index].desc"
+                hide-details
+                placeholder="Enter option description"
+                class="mb-1"
               />
               <v-btn
                 icon="mdi-trash-can-outline"
@@ -86,12 +106,21 @@
                 class="btn-inline"
                 @click="removeRadio(index)"
               ></v-btn>
+              <v-divider></v-divider>
             </div>
             <div class="d-flex justify-center">
               <v-btn @click="addRadio">
                 <i class="ri-add-circle-line ri-icons" style="font-size: 20px;"></i>
               </v-btn>
             </div>
+          </div>
+          <div v-if="localField.type == 'Text'">
+            <div class="font-weight-bold mb-2 mt-3">Content <i class="ph-asterisk ph-xs text-danger" /></div>
+            <QuillEditor
+                v-model:content="localField.text"
+                contentType="html"
+                :options="quillOptions"
+            />
           </div>
         </v-card-text>
         <v-divider></v-divider>
@@ -116,7 +145,9 @@
 </template>
   
 <script setup lang="ts">
-  import { defineProps, defineEmits, ref, watch } from "vue";
+import { defineProps, defineEmits, ref, watch } from "vue";
+import { QuillEditor } from "@vueup/vue-quill";
+import axios from "@/app/http/axios";
   
   interface FormField {
     id: number;
@@ -130,9 +161,52 @@
     disabled?: boolean;
     options?: string[];
     items?: string[];
-    radios?: string[];
+    radios?: object[];
+    singleFile?: boolean;
+    text?: string;
   }
-  
+  const toolbarOptions = [
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    ['bold', 'italic', 'underline', { 'script': 'sub'}, { 'script': 'super' }, 'divider', 'clean', 'link', 'image', 'video', 'code-block'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'align': [] }],
+    [{ 'indent': '-1'}, { 'indent': '+1' }, { 'color': ['white', 'black', 'green', 'red', 'yellow', 'blue'] }],
+];
+const quillOptions = {
+  modules: {
+    toolbar: {
+      container: toolbarOptions,
+      handlers: {
+        image: function () {
+          const input = document.createElement("input");
+          input.setAttribute("type", "file");
+          input.setAttribute("accept", "image/*");
+          input.click();
+
+          input.onchange = async () => {
+            const file = input.files[0];
+            if (file) {
+              const formData = new FormData();
+              formData.append("image", file);
+
+              try {
+                const response = await axios.post("/api/upload-image", formData, {
+                  headers: { "Content-Type": "multipart/form-data" },
+                });
+
+                const range = this.quill.getSelection();
+                this.quill.insertEmbed(range.index, "image", response.data.url);
+              } catch (error) {
+                console.error("Upload failed:", error);
+              }
+            }
+          };
+        },
+      },
+    },
+  },
+  placeholder: "Edit your content...",
+  theme: "snow",
+};
   const props = defineProps<{ field: FormField | null }>();
   const emit = defineEmits(["update", "close"]);
   
@@ -174,7 +248,7 @@ const removeItem = (index: number) => {
 
 const addRadio = () => {
   if (!localField.value.radios) localField.value.radios = [];
-  localField.value.radios.push("");
+  localField.value.radios.push({title: '', desc: ''});
 };
 
 const removeRadio = (index: number) => {
@@ -225,6 +299,21 @@ input {
 .checkbox-group {
   display: flex;
   justify-content: space-between;
+}
+.upload-type {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+.upload-type-item {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-right: 1rem;
+}
+.upload-type-item input {
+  width: 13px;
+  margin-right: 10px;
 }
 </style>
   

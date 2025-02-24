@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\IssueController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StepController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UsersController;
@@ -42,6 +43,7 @@ Route::prefix('users')->group(function() {
 });
 
 Route::prefix('workspace')->group(function() {
+    Route::get('/meta/{id}', [WorkspaceController::class, 'getMeta']);
     Route::get('/', [WorkspaceController::class, 'index']);
     Route::get('/{id}', [WorkspaceController::class, 'get']);
     Route::post('/', [WorkspaceController::class, 'create']);
@@ -58,9 +60,10 @@ Route::prefix('issue')->group(function() {
 });
 
 Route::prefix('form')->group(function() {
-    Route::get('/{id}', [FormController::class, 'get']);
     Route::post('/', [FormController::class, 'create']);
     Route::post('/{id}', [FormController::class, 'update']);
+    Route::get('/getActive/{id}', [FormController::class, 'getActive']);
+    Route::get('/{id}', [FormController::class, 'get']);
 });
 
 Route::prefix('step')->group(function() {
@@ -69,6 +72,14 @@ Route::prefix('step')->group(function() {
     Route::post('/', [StepController::class, 'create']);
     Route::post('/{id}', [StepController::class, 'update']);
     Route::delete('/{id}', [StepController::class, 'delete']);
+});
+
+Route::prefix('report')->group(function() {
+    Route::post('/', [ReportController::class, 'create']);
+    Route::get('/workspace/{id}', [ReportController::class, 'getWithWorkspace']);
+    Route::get('/', [ReportController::class, 'index']);
+    Route::get('/{id}', [ReportController::class, 'get']);
+    Route::delete('/{id}', [ReportController::class, 'delete']);
 });
 
 Route::post('/upload-image', [UploadController::class, 'index']);

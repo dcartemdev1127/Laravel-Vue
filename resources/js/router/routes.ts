@@ -90,13 +90,13 @@ const adminRoute = [
 
 const dashboardRoute = [
   {
-    path: `/`,
+    path: `/:id`,
     name: "dashboard",
     component: () => import("@/views/dashboard/Dashboard.vue"),
     meta: { title: "Dashboard", authRequired: false },
   },
   {
-    path: `/report`,
+    path: `/report/:id`,
     name: "report",
     component: () => import("@/views/report/index.vue"),
     meta: { title: "Report", authRequired: false },

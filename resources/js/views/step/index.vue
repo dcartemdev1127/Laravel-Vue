@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, nextTick, watchEffect } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from "@/app/http/axios";
 import { useRouter, useRoute } from 'vue-router';
 import {useToast} from 'vue-toast-notification';
@@ -8,40 +8,6 @@ import draggable from "vuedraggable";
 import ImageUploader from "@/app/common/components/ImageUploader.vue";
 import IssueList from './IssueList.vue';
 import Map from './Map.vue';
-
-import { GoogleMap,Marker, MarkerCluster } from "vue3-google-map";
-const apiKey = "AIzaSyANKjpCtaUho8oy53T63IFl75Ia9qrdDlI";
-// const mapCenter = ref({ lat: 34.1706, lng: -118.8376 }); // Default: Thousand Oaks
-// const zoomLevel = ref(12);
-// const areaName = ref("");
-// const center = { lat: 40.689247, lng: -74.044502 }
-// const markerOptions = { position: center, label: 'L', title: 'LADY LIBERTY' }
-// interface LatLng {
-//   lat: number;
-//   lng: number;
-// }
-
-// const mapRef = ref<InstanceType<typeof GoogleMap> | null>(null);
-// const mapInstance = ref<google.maps.Map | null>(null);
-// const mapCenter = ref<LatLng>({ lat: 34.1706, lng: -118.8376 }); 
-
-// const onMapLoad = (map: google.maps.Map) => {
-//   mapInstance.value = map;
-//   console.log("Map Loaded:", mapInstance.value);
-// };
-
-// const updateMapCenter = () => {
-//   if (!mapInstance.value) {
-//     console.warn("Map is not ready yet!");
-//     return;
-//   }
-
-//   const center = mapInstance.value.getCenter();
-//   if (center) {
-//     mapCenter.value = { lat: center.lat(), lng: center.lng() };
-//     console.log("Updated Center:", mapCenter.value);
-//   }
-// };
 
 const toast = useToast();
 const router = useRouter();
@@ -61,7 +27,6 @@ const handleSave = async () => {
 }
 
 onMounted(async () => {
-  // await nextTick();
   const response = await axios.get(`/api/step/${step_id}`);
   if(response) {
       name.value = response.data.name;
@@ -83,52 +48,50 @@ interface FormField {
   value?: number;
   items?: string[];
   options?: string[];
-  radios?: string[];
+  radios?: object[];
+  singleFile?: boolean;
+  text?: string;
 }
 
 const components = ref<FormField[]>([
-  { id: 1, type: "text", label: "Text Input", name: "text_1" },
-  { id: 2, type: "email", label: "Email Input", name: "email_1" },
-  { id: 3, type: "textarea", label: "Textarea", name: "textarea_1" },
-  { id: 4, type: "select", label: "Dropdown", name: "select_1", options: ["Option 1", "Option 2"] },
-  { id: 5, type: "list", label: "List Input", name: "list_1", items: ['List 1', 'List 2'] },
-  { id: 6, type: "file", label: "File Upload", name: "file_1" },
-  { id: 7, type: "datetime", label: "Date Time Picker", name: "date_1" },
-  { id: 8, type: "google-map", label: "Google Map", name: "map_1" },
-  { id: 9, type: "checkbox", label: "Checkbox", name: "checkbox_1" },
-  { id: 10, type: "rating", label: "Rating", name: "rating_1", value: 0 },
-  { id: 11, type: "radio", label: "Radio", name: "radio_1", radios: ['Radio 1', 'Radio 2'] },
-  { id: 11, type: "issues", label: "Issue List", name: "issues" },
+  { id: 1, type: "Input", label: "Text Input", name: "input_1" },
+  { id: 2, type: "Email Input", label: "Email Input", name: "email_1" },
+  { id: 3, type: "Textarea", label: "Textarea", name: "textarea_1" },
+  { id: 4, type: "Select", label: "Dropdown", name: "select_1", options: ["Option 1", "Option 2"] },
+  { id: 5, type: "List", label: "List", name: "list_1", items: ['List 1', 'List 2'] },
+  { id: 6, type: "File Uploader", label: "File Uploader", name: "file_1", singleFile: false },
+  { id: 7, type: "Datetime Picker", label: "Date Time Picker", name: "date_1" },
+  { id: 8, type: "Google Map", label: "Google Map", name: "map_1" },
+  { id: 9, type: "Checkbox", label: "Checkbox", name: "checkbox_1" },
+  { id: 10, type: "Rating", label: "Rating", name: "rating_1", value: 0 },
+  { id: 11, type: "Custom Radio", label: "Custom Radio", name: "radio_1", radios: [{title: 'title1', desc: 'description1'},{title: 'title2', desc: 'description2'}] },
+  { id: 11, type: "Issue List", label: "Issue List", name: "issues" },
+  { id: 11, type: "Text", label: "Text", name: "text" },
 ]);
 
 const formFields = ref<FormField[]>([]);
 const showModal = ref(false);
 const editingField = ref<FormField | null>(null);
 
-// Add new field
 const addField = (component: FormField) => {
   formFields.value.push({ ...component, id: Date.now() });
 };
 
-// Remove field
 const removeField = (id: number) => {
   formFields.value = formFields.value.filter(field => field.id !== id);
 };
 
-// Edit field
 const editField = (field: FormField) => {
   editingField.value = { ...field };
   showModal.value = true;
 };
 
-// Save edited field
 const saveEdit = (updatedField: FormField) => {
   const index = formFields.value.findIndex(f => f.id === updatedField.id);
   if (index !== -1) formFields.value[index] = updatedField;
   closeEdit();
 };
 
-// Close edit modal
 const closeEdit = () => {
   showModal.value = false;
   editingField.value = null;
@@ -163,6 +126,9 @@ const addListItem = (field: FormField) => {
 
 .info-box p {
   margin: 5px 0;
+}
+.map-view {
+  width: 100%;
 }
 </style>
 
@@ -252,7 +218,7 @@ const addListItem = (field: FormField) => {
                           class="d-flex justify-space-between items-center gap-1 border py-1 pl-4 w-full my-1"
                           style="align-items: center; border-radius: .75rem"
                         >
-                          <span class="inline-flex items-center justify-center text-sm">{{ element.label }}</span>
+                          <span class="inline-flex items-center justify-center text-sm">{{ element.type }}</span>
                           <div>
                             <v-btn
                               icon="mdi-pencil-outline" 
@@ -279,18 +245,18 @@ const addListItem = (field: FormField) => {
                     <div v-for="field in formFields" :key="field.id">
                       <div class="font-weight-bold mb-1">{{field.label}}</div>
                       <v-text-field
-                        v-if="field.type == 'text'"
+                        v-if="field.type == 'Input'"
                         hide-details
                         variant="solo"
                         density="compact"
                         class="text-field-component"
-                        :placeholder="field.placeholder || 'text input'"
+                        :placeholder="field.placeholder || ''"
                       />
                       <v-text-field
-                        v-if="field.type == 'email'"
+                        v-if="field.type == 'Email Input'"
                         hide-details
                         variant="solo"
-                        :placeholder="field.placeholder || 'example@gmail.com'"
+                        :placeholder="field.placeholder || ''"
                         density="compact"
                         class="text-field-component"
                       >
@@ -299,29 +265,33 @@ const addListItem = (field: FormField) => {
                         </template>
                       </v-text-field>
                       <v-textarea
-                        v-if="field.type == 'textarea'"
+                        v-if="field.type == 'Textarea'"
                         hide-details
                         variant="solo"
                         density="compact"
-                        :placeholder="field.placeholder || 'textarea'"
+                        :placeholder="field.placeholder || ''"
                         class="text-field-component"
                       />
                       <VueDatePicker
-                        v-if="field.type == 'datetime'"
+                        v-if="field.type == 'Datetime Picker'"
                         v-model="defaultModel"
                         :teleport="true"
                         placeholder="Select date"
                       />
-                      <ImageUploader v-if="field.type == 'file'"/>
+                      <ImageUploader 
+                        v-if="field.type == 'File Uploader'" 
+                        :text="field.placeholder" 
+                        :multiple="field.singleFile"
+                      />
                       <v-rating
-                        v-if="field.type == 'rating'"
+                        v-if="field.type == 'Rating'"
                         density="comfortable"
                         clearable
                         :model-value="3"
                         active-color="warning"
                       />
                       <v-select
-                        v-if="field.type == 'select'"
+                        v-if="field.type == 'Select'"
                         :label="field.placeholder"
                         variant="outlined"
                         :items="field.options"
@@ -329,7 +299,7 @@ const addListItem = (field: FormField) => {
                         class="mt-2"
                       />
                       <v-checkbox
-                        v-if="field.type == 'checkbox'"
+                        v-if="field.type == 'Checkbox'"
                         :model-value="true"
                         color="primary"
                         hide-details
@@ -337,45 +307,24 @@ const addListItem = (field: FormField) => {
                       >
                         <template #label><span>{{ field.placeholder || 'checkbox' }}</span></template>
                       </v-checkbox>
-                      <v-radio-group 
-                        v-if="field.type == 'radio'" 
-                        :model-value="field.radios[0]" 
-                        color="primary"
-                      >
-                        <v-radio 
-                          v-for="radio in field.radios" 
-                          density="compact" 
-                          :value="radio"
-                        >
-                          <template #label><span>{{ radio }}</span></template>
-                        </v-radio>
-                      </v-radio-group>
+                      <div v-if="field.type == 'Custom Radio'" v-for="(item, i) in field.radios" :key="i" class="custom-radio">
+                        <div class="radio-item">
+                          
+                          <label :for="'radio-'+i" class="radio-text">
+                            <p class="radio-title">{{ item.title }}</p>
+                            <p class="radio-desc">{{ item.desc }}</p>
+                          </label>
+                          <div class="radio-check">
+                            <input :id="'radio-'+i" type="radio" v-model="defaultModel" :value="i"/>
+                          </div>
+                        </div>
+                      </div>
                       <v-list v-if="field.type == 'list'" :items="field.items"></v-list>
-                      <IssueList v-if="field.type == 'issues'"/>
-                      <!-- <GoogleMap
-                          :api-key="apiKey"
-                          style="width: 100%; height: 500px"
-                          :center="center"
-                          :zoom="15"
-                        >
-                          <Marker :options="markerOptions" />
-                        </GoogleMap> -->
-                        <!-- <GoogleMap
-                        v-if="field.type == 'google-map'"
-                          ref="mapRef"
-                          :api-key="apiKey"
-                          :center="mapCenter"
-                          :zoom="zoomLevel"
-                          style="width: 100%; height: 500px"
-                          @idle="updateMapCenter"
-                           @on-load="onMapLoad"
-                        />
-                        <div class="info-box">
-                          <p><strong>Latitude:</strong> {{ mapCenter.lat }}</p>
-                          <p><strong>Longitude:</strong> {{ mapCenter.lng }}</p>
-                          <p><strong>Area:</strong> {{ areaName || "Loading..." }}</p>
-                        </div> -->
-                        <!-- <Map v-if="field.type == 'google-map'" /> -->
+                      <IssueList :placeholder="field.placeholder" v-if="field.type == 'Issue List'"/>
+                      <div v-if="field.type == 'Text'" v-html="field.text"></div>
+                      <div v-if="field.type == 'Google Map'" class="map-view">
+                        <Map />
+                      </div>
                       <p class="text-muted my-1 ml-1">{{field.description}}</p>
                     </div>
                   </v-card-text>
