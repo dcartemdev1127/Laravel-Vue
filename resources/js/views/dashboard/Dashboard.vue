@@ -4,7 +4,11 @@ import axios from "@/app/http/axios";
 import { useRouter, useRoute } from 'vue-router';
 import { GoogleMap, Marker } from 'vue3-google-map';
 import { format } from 'date-fns';
+import { useLoading } from 'vue3-loading-overlay';
+import { useLayoutStore } from "@/store/app";
 
+const state = useLayoutStore();
+const loader = useLoading();
 const route = useRoute();
 const router = useRouter();
 const reports = ref([]);
@@ -21,6 +25,7 @@ const currentPage = ref(1);
 const limit = 20;
 const detailedReport = ref({});
 const selectedImage = ref(null);
+const leftSide = ref(null);
 
 const openImage = (image) => {
   selectedImage.value = image;
@@ -66,6 +71,11 @@ const getBounds = async () => {
 
 const showDetail = async (id: any) => {
     isDetail.value = true;
+    loader.show({
+        container: leftSide.value,
+        canCancel: false,
+        loader: 'dots',
+    })
     const response = await axios.get(`/api/report/${id}`);
     if(response) {
         const content = JSON.parse(response.data.content);
@@ -82,6 +92,7 @@ const showDetail = async (id: any) => {
         delete content.location;
         delete content.place_name;
         detailedReport.value = {issue_name, address, status, access, formattedDate, files, content}
+        loader.hide();
     }
 }
 
@@ -98,40 +109,47 @@ watch(() => mapRef.value?.ready,
 );
 
 onMounted(async () => {
+    loader.show({
+        canCancel: false,
+        loader: 'dots',
+        opacity: 1
+    });
     const response = await axios.get(`/api/workspace/meta/${workspace_id}`);
     if(response) {
         place_name.value = response.data.place_name;
+        state.changeTopBarTitle(place_name.value);
         place_address.value = response.data.place_address;
         form_id.value = response.data.form_id;
         location.value = JSON.parse(response.data.location);
         getBounds();
-    }
-    const report_response = await axios.get(`/api/report/workspace/${workspace_id}`);
-    if(report_response) {
-        reports.value = report_response.data.map(item => {
-            const content = JSON.parse(item.content);
-            locations.value.push(content['location']);
-            const date = new Date(item.created_at);
-            const formattedDate = format(date, "MM/dd/yy hh:mm:ss a");
-            return {
-                id: item.id,
-                title: content['issue_name'],
-                location: content['address'],
-                time: formattedDate,
-                status: item.status
-            }
-        });
+        const report_response = await axios.get(`/api/report/workspace/${workspace_id}`);
+        if(report_response) {
+            reports.value = report_response.data.map(item => {
+                const content = JSON.parse(item.content);
+                locations.value.push(content['location']);
+                const date = new Date(item.created_at);
+                const formattedDate = format(date, "MM/dd/yy hh:mm:ss a");
+                return {
+                    id: item.id,
+                    title: content['issue_name'],
+                    location: content['address'],
+                    time: formattedDate,
+                    status: item.status
+                }
+            });
+            loader.hide();
+        }
     }
 });
 </script>
 
 <template>
     <div class="main">
-        <div class="left-sidebar">
+        <div class="left-sidebar" ref="leftSide">
             <div v-if="!isDetail">
                 <div class="report-list-header">
                     <h1>Service Requests</h1>
-                    <div class="report-list-pagenation">
+                    <div class="report-list-pagenation" v-if="totalReports">
                         <div class="report-list-page">{{ from + ' - ' + to + ' of ' + totalReports }}</div>
                         <div class="report-list-actions">
                             <v-btn class="page-btn" variant="text" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">&lt;</v-btn>
@@ -139,11 +157,22 @@ onMounted(async () => {
                         </div>
                     </div>
                 </div>
+                <div v-if="!totalReports">
+                    <p class="text-center font-weight-bold mt-5">No Report</p>
+                </div>
                 <div v-for="item in paginatedReports" :key="item.id" class="report-list">
                     <div @click="showDetail(item.id)" class="report-title">{{ item.title }}</div>
                     <p class="report-location">{{ item.location }}</p>
                     <div class="report-state-time">
-                        <div class="report-state">{{ item.status }}</div>
+                        <div class="report-state">
+                            <v-chip
+                                size="x-small"
+                                :color="item.status == 'accept' ? 'success' : 'danger'"
+                                variant="outlined"
+                            >
+                                {{ item.status }}
+                            </v-chip>
+                        </div>
                         <div class="report-time">
                             <v-icon>mdi-clock-time-two-outline</v-icon>
                             {{ item.time }}
@@ -185,11 +214,11 @@ onMounted(async () => {
                     <v-divider class="my-3"></v-divider>
                     <div class="report-footer">
                         <div>
-                            <v-icon>ph-eye-thin</v-icon>
+                            <v-icon>mdi-eye-circle-outline</v-icon>
                             <span>{{ detailedReport.access ? 'Public' : 'Private' }}</span>
                         </div>
                         <div>
-                            <v-icon>ph-eye-thin</v-icon>
+                            <v-icon>mdi-city-variant-outline</v-icon>
                             <span>{{ place_name }}</span>
                         </div>
                     </div>

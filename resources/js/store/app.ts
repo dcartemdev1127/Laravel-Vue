@@ -27,8 +27,12 @@ export const useLayoutStore = defineStore("layout-store", {
     sideBarColor: SIDEBAR_COLOR.DARK,
     sideBarImage: "default",
     dir: DIR.LTR,
+    topBarTitle: ''
   }),
   actions: {
+    changeTopBarTitle(title: string) {
+      this.topBarTitle = title;
+    },
     changeLayoutType(layoutType: string) {
       this.layoutType = layoutType;
       setAttributes("data-layout", this.layoutType);

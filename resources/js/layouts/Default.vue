@@ -3,8 +3,10 @@ import TopBar from "@/components/layouts/topBar/index.vue";
 import { useLayoutStore } from "@/store/app";
 import { computed } from "vue";
 import { LAYOUTS } from "@/app/const";
-const state = useLayoutStore();
+import { useRouter } from 'vue-router';
 
+const state = useLayoutStore();
+const router = useRouter();
 const isHorizontal = computed(() => {
   return state.layoutType === LAYOUTS.HORIZONTAL;
 });
@@ -13,9 +15,9 @@ const isHorizontal = computed(() => {
   <div data-simplebar>
     <div class="header">
       <div class="header-item">
-        <a class="header-title">Thousand Oaks</a>
+        <a class="header-title">{{ state.topBarTitle }}</a>
         <div>
-          <v-icon class="header-icon">ph-user-circle-thin</v-icon>
+          <v-icon @click="router.push('/signin')" class="header-icon">ph-user-circle-thin</v-icon>
           <v-icon class="header-icon">ph-question-thin</v-icon>
         </div>
       </div>

@@ -1,14 +1,19 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from "@/app/http/axios";
 import { useRouter, useRoute } from 'vue-router';
 import IssueList from '@/views/step/IssueList.vue';
 import ImageUploader from "@/app/common/components/ImageUploader.vue";
 import Map from '@/views/step/Map.vue';
+import { useLoading } from 'vue3-loading-overlay';
+import { useToast } from 'vue-toast-notification';
 
+const toast = useToast();
+const loader = useLoading();
 const route = useRoute();
 const router = useRouter();
 const steps = ref([]);
+const footer = ref('');
 const step = ref(0);
 const submitData = ref({});
 const form_id = route.params.id;
@@ -18,11 +23,14 @@ const location = ref({});
 const place_address = ref('');
 const nextButtonText = ref('NEXT');
 const isPrevDisabled = ref(true);
+const previewContent = ref([]);
+
 const nextStep = async () => {
     step.value ++;
     if(step.value == steps.value.length) {
         const response = await axios.post('/api/report', {issue_id: issue_id.value, content: JSON.stringify(submitData.value), status: 'accept', access: true});
         if(response) {
+            toast.success('Issue reported successfully.', {position: 'top-right'})
             router.push(`/${workspace_id.value}`);
         }
     }
@@ -44,7 +52,6 @@ const prevStep = () => {
 const saveLocation = (location: Object) => {
     submitData.value['address'] = location.address;
     submitData.value['location'] = location.coords;
-    console.log(submitData.value)
 }
 
 const selectIssue = (data: Object) => {
@@ -56,7 +63,23 @@ const saveFiles = (files: any) => {
     submitData.value['files'] = files.map(file => file.path);
 }
 
+watch(() => submitData.value, (newValue) => {
+    const updatedPreview = { ...previewContent.value };
+    Object.keys(newValue).forEach(key => {
+        if (!['location', 'place_name', 'address', 'issue_name', 'files'].includes(key)) {
+            if (newValue[key] !== '') updatedPreview[key] = newValue[key];
+        }
+    });
+    previewContent.value = updatedPreview;
+}, { deep: true });
+
+
 onMounted(async () => {
+    loader.show({
+        canCancel: false,
+        loader: 'dots',
+        opacity: 1
+    })
     const response = await axios.get(`/api/form/getActive/${form_id}`);
     if(response) {
         workspace_id.value = response.data.workspace_id;
@@ -66,6 +89,7 @@ onMounted(async () => {
             location.value = JSON.parse(workspace.data.location);
             submitData.value['place_name'] = workspace.data.place_name;
         }
+        footer.value = response.data.footer;
         steps.value = response.data.steps;
         steps.value.forEach(step => {
             step.fields.forEach(field => {
@@ -76,6 +100,7 @@ onMounted(async () => {
         });
         submitData.value['address'] = '';
         submitData.value['issue_name'] = '';
+        loader.hide();
     }
 });
 </script>
@@ -133,7 +158,7 @@ onMounted(async () => {
                             :address="place_address" 
                             @confirm_location="saveLocation"
                         />
-                        <ImageUploader @update:modelValue="saveFiles" v-if="field.type == 'File Uploader'"/>
+                        <ImageUploader @update:modelValue="saveFiles" v-if="field.type == 'File Uploader'" style="z-index: 100;"/>
                         <v-rating
                             v-if="field.type == 'Rating'"
                             density="comfortable"
@@ -173,7 +198,7 @@ onMounted(async () => {
                                     :id="'radio-'+i" 
                                     type="radio" 
                                     v-model="submitData[field.name]"
-                                    :value="i"/>
+                                    :value="item.title"/>
                             </div>
                             </div>
                         </div>
@@ -194,6 +219,7 @@ onMounted(async () => {
                         <v-btn :disabled="isPrevDisabled" @click="prevStep">PREV</v-btn>
                         <v-btn :disabled="isNextDisabled" @click="nextStep">{{ nextButtonText }}</v-btn>
                     </v-card-actions>
+                    <div v-html="footer" class="text-center mb-5"></div>
                 </div>
             </v-col> 
             <v-col cols="5" class="field-preview">
@@ -203,17 +229,18 @@ onMounted(async () => {
                         <p class="preview-location">{{ submitData['address'] }}</p>
                     </div>
                     <v-divider class="preview-divider"></v-divider>
-                    <div class="preview-content">
-                        <p>This is description</p>
+                    <div class="preview-content" v-for="(item, key) in previewContent" :key="key">
+                        <h1>{{ key }}</h1>
+                        <p>{{ item }}</p>
                     </div>
                     <v-divider class="preview-divider"></v-divider>
                     <div class="preview-footer">
                         <div class="preview-footer-item">
-                            <v-icon>ph-eye-thin</v-icon>
+                            <v-icon>mdi-eye-circle-outline</v-icon>
                             <span>Private</span>
                         </div>
                         <div class="preview-footer-item">
-                            <v-icon>ph-eye-thin</v-icon>
+                            <v-icon>mdi-city-variant-outline</v-icon>
                             <span>{{ submitData['place_name'] }}</span>
                         </div>
                     </div>

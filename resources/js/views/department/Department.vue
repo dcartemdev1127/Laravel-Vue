@@ -122,7 +122,7 @@ onMounted( async () => {
     <v-dialog v-model="isShow" class="w-50">
         <Card>
             <v-card-title class="text-center">
-                <h1>Edit Department</h1>
+                <h5 class="text-h6 font-weight-bold">Edit department</h5>
             </v-card-title>
             <v-card-text>
                 <div class="font-weight-bold mb-2 mt-3">Department Name</div>
@@ -134,7 +134,7 @@ onMounted( async () => {
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions class="d-flex justify-end">
-                <v-btn @click="isShow = true">Cancel</v-btn>
+                <v-btn @click="isShow = false">Cancel</v-btn>
                 <v-btn color="primary" @click="handleUpdate(selectId)">Save</v-btn>
             </v-card-actions>
         </Card>

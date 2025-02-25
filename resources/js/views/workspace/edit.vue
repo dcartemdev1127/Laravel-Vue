@@ -5,6 +5,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useToast } from 'vue-toast-notification';
 import Swal from 'sweetalert2';
 import draggable from 'vuedraggable';
+import GoogleAddressAutocomplete from 'vue3-google-address-autocomplete';
 
 const toast = useToast();
 const router = useRouter();
@@ -16,9 +17,12 @@ const categories = ref([]);
 const isShow = ref(false);
 const cat_name = ref('');
 const cat_status = ref(true);
+const place_address = ref('');
+const place_name = ref('');
+const location = ref({});
 
 const handleSave = async () => {
-    const response = await axios.post(`/api/workspace/${workspace_id}`, {name: name.value, status: status.value});
+    const response = await axios.post(`/api/workspace/${workspace_id}`, {name: name.value, status: status.value, place_name: place_name.value, place_address: place_address.value, location: location.value});
     categories.value.map(async (item, index) => {
         await axios.post(`/api/category/${item.id}`, {order: index+1});
     });
@@ -34,6 +38,8 @@ const handleCreate = async () => {
         toast.success('Create category successfully', {position: 'top-right'});
         categories.value = categories.value.concat(response.data);
         isShow.value = false;
+        cat_name.value = '';
+        cat_status.value = true;
     }
 }
 
@@ -57,12 +63,20 @@ const handleDelete = (id: string) => {
     });
 }
 
+const callbackFunction = (place) => {
+    place_name.value = place.name;
+    place_address.value = place.formatted_address;
+    location.value = {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()};
+}
+
 onMounted(async () => {
     const response = await axios.get(`/api/workspace/${workspace_id}`);
     if(response) {
         name.value = response.data.name;
         status.value = !!response.data.status;
         categories.value = response.data.categories;
+        place_address.value = response.data.place_address;
+        location.value = response.data.location;
     }
 })
 </script>
@@ -70,14 +84,14 @@ onMounted(async () => {
 <template>
     <v-row justify="space-between" class="mt-5">
         <v-btn
-            class="ml-5"
+            class="ml-5 mt-5"
             color="primary"
             @click="router.push({path: '/workspace'})"
         >
             BACK
         </v-btn>
         <v-btn
-            class="mr-5"
+            class="mr-5 mt-5"
             color="primary"
             @click="handleSave()"
         >
@@ -93,6 +107,15 @@ onMounted(async () => {
                         v-model="name"
                         hide-details
                         placeholder="Enter workspace name"
+                    />
+                    <div class="font-weight-bold mb-2 mt-3">Location <i class="ph-asterisk ph-xs text-danger" /></div>
+                    <GoogleAddressAutocomplete
+                        apiKey="AIzaSyANKjpCtaUho8oy53T63IFl75Ia9qrdDlI"
+                        @callback="callbackFunction"
+                        class="search-location"
+                        placeholder="Search Place Name or Address"
+                        v-model="place_address"
+                        :value="place_address"
                     />
                     <v-row class="mt-1">
                         <v-col cols="2">
@@ -229,3 +252,21 @@ onMounted(async () => {
         </v-card>
     </v-dialog>
 </template>
+
+<style>
+.search-location {
+    width: 100%;
+    height: 42px;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: .25rem;
+}
+.search-location :focus {
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: .25rem;
+}
+</style>

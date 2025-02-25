@@ -80,14 +80,14 @@ onMounted(async () => {
 <template>
     <v-row justify="space-between" class="mt-5">
         <v-btn
-            class="ml-5"
+            class="ml-5 mt-5"
             color="primary"
             @click="router.push({path: '/edit_workspace', query: {id: workspace_id}})"
         >
             BACK
         </v-btn>
         <v-btn
-            class="mr-5"
+            class="mr-5 mt-5"
             color="primary"
             @click="handleSave()"
         >

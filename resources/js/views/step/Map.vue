@@ -61,7 +61,7 @@ watch([() => mapRef.value?.ready, props],
     mapRef.value.map.addListener("idle", () => {
       mapCenter.value = mapRef.value.map.getCenter().toJSON();
       getAddress(mapCenter.value.lat, mapCenter.value.lng);
-      isInsideBound.value = !bounds.value.contains(mapCenter.value);
+      isInsideBound.value = !bounds.value?.contains(mapCenter.value);
     });
   }
 );
@@ -112,6 +112,7 @@ const selectLocation = () => {
 .map {
   width: 100%;
   height: 600px;
+  min-height: 600px;
 }
 .marker {
   position: absolute;

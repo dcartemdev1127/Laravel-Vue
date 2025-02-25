@@ -6,7 +6,7 @@ import ToastPlugin from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-bootstrap.css';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-
+import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
 import "./assets/scss/app.scss";
 
 import "simplebar";

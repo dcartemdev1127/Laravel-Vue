@@ -3,19 +3,19 @@ import { MenuItemType } from "@/components/layouts/types";
 export const menuItems: MenuItemType[] = [
   {
     label: "Department",
-    icon: "ph-folder-open",
+    icon: "ph-bank-thin",
     link: "/department",
     id: "sidebarDepartment",
   },
   {
     label: "User Management",
-    icon: "ph-folder-open",
+    icon: "ph-users-thin",
     link: '/users',
     id: 'sidebarUsers'
   },
   {
     label: 'Workspace',
-    icon: "ph-folder-open",
+    icon: " ph-share-network-thin",
     link: '/workspace',
     id: 'sidebarWorkspace'
   },

@@ -100,7 +100,7 @@ const onRemove = (item: any) => {
 };
 </script>
 <template>
-  <div class="position-relative">
+  <div class="position-relative" style="z-index: 9999;">
     <v-file-input
       v-model="files"
       :multiple="multiple"
